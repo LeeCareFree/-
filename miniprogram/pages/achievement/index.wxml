@@ -1,0 +1,52 @@
+<wxs src="./index.wxs" module="fun" />
+<view class="top-title">业绩查询</view>
+<view class="date-picker">
+    <view class="left">业绩时间</view>
+    <picker mode="date" bindchange="bindDateChange">
+        <view class="select-box">
+            <input class="right-input" type="text" disabled="true" placeholder="请选择查询日期" name="date" value="{{date}}" />
+            <view class="info_more">
+                <image class="more" src="/images/right.png" />
+            </view>
+        </view>
+    </picker>
+</view>
+<!-- <scroll-view scroll-y="true" bindscrolltoupper="onTopper"> -->
+<view class="achievement-container" wx:for="{{achievements}}" wx:key="_id">
+    <view class="list-item">
+        <view class="title">日期：</view>
+        <view class="content">{{fun.exchangeTime(item.date)}}</view>
+    </view>
+    <view class="list-item">
+        <view class="title">支行：</view>
+        <view class="content">{{item.bankData}}</view>
+    </view>
+    <view class="list-item">
+        <view class="title">职位：</view>
+        <view class="content">{{item.position}}</view>
+    </view>
+    <view class="list-item">
+        <view class="title">姓名：</view>
+        <view class="content">{{item.username}}</view>
+    </view>
+    <view class="list-item">
+        <view class="title">分类：</view>
+        <view class="content">{{item.sortData}}</view>
+    </view>
+    <view class="list-item">
+        <view class="title">产品：</view>
+        <view class="content">{{item.prodData}}</view>
+    </view>
+    <view class="list-item">
+        <view class="title">金额：</view>
+        <view class="content">{{item.moneyData}}{{item.unit}}</view>
+    </view>
+    <view class="list-item" wx:if="{{item.fundRateData || item.insuranceRateData}}">
+        <view class="title">频率：</view>
+        <view class="content">{{item.fundRateData || item.insuranceRateData}}</view>
+    </view>
+    <view class="list-item" wx:if="{{item.notesData}}">
+        <view class="title">备注：</view>
+        <view class="content">{{item.notesData}}</view>
+    </view>
+</view>

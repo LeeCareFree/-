@@ -1,0 +1,129 @@
+<!-- pages/admin.wxml -->
+<view class="adminContainer">
+    <view class="top-title">管理员操作</view>
+    <view class="user_info">
+        
+        <view class="form-item">
+            <view class="left">支行名称</view>
+            <picker range="{{banks}}" bindchange="bindBankChange">
+                <view class="select-box">
+                    <input class="right-input" type="text" disabled="{{true}}" name="bankData" value="{{bankData}}" placeholder="请选择需要操作的支行" />
+                    <view class="info_more">
+                        <image class="more" src="/images/right.png" />
+                    </view>
+                </view>
+            </picker>
+        </view>
+        <input wx:if="{{isUpdateBank}}" class="update_input" bindinput="updateBankInput" value="{{updateBankData}}" placeholder="请输入修改后的支行" />
+        <input wx:if="{{isAddBank}}" class="update_input" bindinput="addBankInput" value="{{addBankData}}" placeholder="请输入新增的支行" />
+    </view>
+    <view class="btnView">
+        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="banks">修改</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="banks">删除</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="banks">新增</text>
+    </view>
+    <view class="user_info">
+        <view class="form-item">
+            <view class="left">业绩类别</view>
+            <picker range="{{sorts}}" bindchange="bindSortChange">
+                <view class="select-box">
+                    <input class="right-input" type="text" disabled="{{true}}" name="sortData" value="{{sortData}}" placeholder="请选择需要操作的业绩分类" />
+                    <view class="info_more">
+                        <image class="more" src="/images/right.png" />
+                    </view>
+                </view>
+            </picker>
+        </view>
+        <input wx:if="{{isUpdateSort}}" class="update_input" bindinput="updateSortInput" value="{{updateSortData}}" placeholder="请输入新的业绩分类" />
+        <input wx:if="{{isAddSort}}" class="update_input" bindinput="addSortInput" value="{{addSortData}}" placeholder="请输入新的业绩分类" />
+    </view>
+    <view class="btnView">
+        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="sorts">修改</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="sorts">删除</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="sorts">新增</text>
+    </view>
+    <view class="title">员工信息</view>
+    <view class='searchBar'>
+        <view class='searchBarInputC flex alignC'>
+            <view class='searchBarInput'>
+                <input type='text' class='searchBarInput_in' bindinput="searchNameInput" placeholder="按手机号查询" value='{{searchName}}' confirm-type='search'></input>
+            </view>
+            <view class='searchClose' bindtap='searchHandle'>查询</view>
+        </view>
+    </view>
+    <!-- 修改用户信息 -->
+    <view class="user_info" wx:if="{{isUpdateUser}}">
+        <view class="form-item">
+            <view class="left">员工姓名</view>
+            <input class="right-input" name="username" value="{{updateUserInfo.username}}" bindinput="usernameInput" data-type="update" placeholder="请输入真实姓名" />
+        </view>
+        <view class="form-item">
+            <view class="left">职位</view>
+            <input class="right-input" name="username" value="{{updateUserInfo.position}}" bindinput="positionInput" data-type="update" placeholder="请输入职位" />
+        </view>
+        <view class="form-item">
+            <view class="left">所在支行</view>
+            <picker range="{{banks}}" bindchange="bindUserBankChange" data-type="update">
+                <view class="select-box">
+                    <input class="right-input" type="text" disabled="{{true}}" name="bankData" value="{{updateUserInfo.bank}}" placeholder="请选择所在支行" />
+                    <view class="info_more">
+                        <image class="more" src="/images/right.png" />
+                    </view>
+                </view>
+            </picker>
+        </view>
+        <view class="form-item">
+            <view class="left">手机号</view>
+            <input class="right-input" name="username" value="{{updateUserInfo.mobile}}" bindinput="mobileInput" data-type="update" placeholder="请输入手机号" />
+        </view>
+    </view>
+    <!-- 新增用户信息 -->
+    <view class="user_info" wx:if="{{isAddUser}}">
+        <view class="form-item">
+            <view class="left">员工姓名</view>
+            <input class="right-input" name="username" value="{{addUserInfo.username}}" bindinput="usernameInput" data-type="add" placeholder="请输入真实姓名" />
+        </view>
+        <view class="form-item">
+            <view class="left">职位</view>
+            <input class="right-input" name="username" value="{{addUserInfo.position}}" bindinput="positionInput" data-type="add" placeholder="请输入职位" />
+        </view>
+        <view class="form-item">
+            <view class="left">所在支行</view>
+            <picker range="{{banks}}" bindchange="bindUserBankChange" data-type="add">
+                <view class="select-box">
+                    <input class="right-input" type="text" disabled="{{true}}" name="bankData" value="{{addUserInfo.bank}}" placeholder="请选择所在支行" />
+                    <view class="info_more">
+                        <image class="more" src="/images/right.png" />
+                    </view>
+                </view>
+            </picker>
+        </view>
+        <view class="form-item">
+            <view class="left">手机号</view>
+            <input class="right-input" name="username" value="{{addUserInfo.mobile}}" bindinput="mobileInput" data-type="add" placeholder="请输入手机号" />
+        </view>
+    </view>
+    <view class='btnView'>
+        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="users">修改</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="users">删除</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="users">新增</text>
+    </view>
+    <view class="title">业绩表导出</view>
+<view class="export-picker">
+    <picker mode="date" bindchange="bindStartDateChange">
+        <view class="select-box">
+            <input class="right-input" style="height:50rpx;" type="text" disabled="true" placeholder="请选择起始日期" name="date" value="{{startDate}}" />
+        </view>
+    </picker>
+    <view class="center-text">至</view>
+    <picker mode="date" bindchange="bindFinallDateChange">
+        <view class="select-box">
+            <input class="right-input" style="height: 50rpx;" type="text" disabled="true" placeholder="请选择结束日期" name="date" value="{{finallDate}}" />
+        </view>
+    </picker>
+</view>
+
+<view class="bottom">
+<button class="export-btn" bind:tap="exportExcel">导出</button>
+</view>
+</view>

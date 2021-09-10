@@ -1,0 +1,92 @@
+<canvas class="canvas" id='myCanvas' style="width: 320px;height: 256px" type='2d'></canvas>
+<form bindsubmit="formSubmit">
+  <view class="main">
+    <view class="top-title">填写业绩信息</view>
+    <view class="form-content">
+      <view class="form-item">
+        <view class="left">业绩时间</view>
+        <picker mode="date" bindchange="bindDateChange">
+          <view class="select-box">
+            <input class="right-input" type="text" disabled="true" placeholder="请选择日期" name="date" value="{{form.date}}" />
+            <view class="info_more">
+              <image class="more" src="/images/right.png" />
+            </view>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="left">所在支行</view>
+        <input class="right-input" type="text" disabled="{{true}}" name="bankData" value="{{form.bankData}}" placeholder="请选择所在支行" />
+        <!-- <picker range="{{banks}}" bindchange="bindBankChange">
+          <view class="select-box">
+            <input class="right-input" type="text" disabled="{{true}}" name="bankData" value="{{form.bankData}}" placeholder="请选择所在支行" />
+            <view class="info_more">
+              <image class="more" src="/images/right.png" />
+            </view>
+          </view>
+        </picker> -->
+      </view>
+      <view class="form-item">
+        <view class="left">员工姓名</view>
+        <input class="right-input" disabled="{{true}}" name="username" value="{{form.username}}" bindinput="usernameInput" placeholder="请输入成员真实姓名" />
+      </view>
+      <view class="form-item">
+        <view class="left">业绩类别</view>
+        <picker range="{{sorts}}" bindchange="bindSortChange">
+          <view class="select-box">
+            <input class="right-input" type="text" disabled="{{true}}" name="sortData" value="{{form.sortData}}" placeholder="请选择业绩分类" />
+            <view class="info_more">
+              <image class="more" src="/images/right.png" />
+            </view>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="left">产品名称</view>
+        <input class="right-input" name="prodData" value="{{form.prodData}}" bindinput="prodInput" placeholder="请输入产品名称" />
+      </view>
+      <view class="form-item" wx:if="{{form.sortData != '一体化联动'}}">
+        <view class="left">业绩金额</view>
+        <input class="right-input" name="money" value="{{form.moneyData}}" type="number" bindinput="moneyInput" placeholder="请输入业绩金额" />
+        <picker range="{{units}}" bindchange="bindUnitChange">
+          <view class="money-select-box">
+            <view class="money-title">单位:</view><input class="money-right-input" type="text" disabled="{{true}}" name="rateData" value="{{form.unit}}" placeholder="万" />
+            <view class="info_more">
+              <image class="more" src="/images/right.png" />
+            </view>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item" wx:if="{{form.sortData == '保险' || form.sortData == '基金定投'}}">
+        <view class="left">频率</view>
+        <picker range="{{form.sortData == '保险' ? insuranceRate : fundRate}}" bindchange="bindRateChange">
+          <view class="select-box">
+            <input class="right-input" type="text" disabled="{{true}}" name="rateData" value="{{form.sortData == '保险' ? form.insuranceRateData : form.fundRateData}}" placeholder="请选择频率" />
+            <view class="info_more">
+              <image class="more" src="/images/right.png" />
+            </view>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="left">备注</view>
+        <input class="right-input" name="notesData" value="{{form.notesData}}" bindinput="notesInput" placeholder="请输入备注" />
+      </view>
+    </view>
+  </view>
+  <view class="bottom">
+    <button class="save-btn" form-type="submit" size="mini">提交</button>
+  </view>
+  <view class='modal-mask' wx:if='{{showShareModal}}' bindtap='clickMask'>
+    <view class='modal-content'>
+      <view class='main-content'>
+        <view class="main-title">温馨提示</view>
+        <view class="content-detail">提交成功，是否转发！</view>
+      </view>
+      <view class='modal-footer'>
+        <button class='cancel-btn' bindtap='cancel'>取消</button>
+        <button class='confirm-btn' bindtap='confirm' open-type="share">转发</button>
+      </view>
+    </view>
+  </view>
+</form>

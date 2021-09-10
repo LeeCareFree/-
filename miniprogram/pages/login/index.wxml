@@ -1,0 +1,21 @@
+<view class="container">
+  <!-- 账号 -->
+  <view class="inputView">
+    <image class="nameImage" src="../../images/name.png"></image>
+    <label class="loginLab">账号</label>
+    <input class="inputText" type="text" placeholder="请输入账号" bindinput="usernameInput" />
+  </view>
+  <view class="line"></view>
+  <!-- 密码 -->
+  <view class="inputView">
+    <image class="keyImage" src="../../images/password.png"></image>
+    <label class="loginLab">密码</label>
+    <input class="inputText" password name="password" password="true" placeholder="请输入密码" bindinput="passwordInput" />
+  </view>
+  <!-- 按钮 -->
+  <view class="loginBtnView">
+    <button class="loginBtn" disabled="{{disabled}}" bindtap="loginBtnClick">
+      登录
+    </button>
+  </view>
+</view>

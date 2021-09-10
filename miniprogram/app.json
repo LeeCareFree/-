@@ -1,0 +1,49 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/login/index",
+        "pages/achievement/index",
+        "pages/admin/index",
+        "pages/databoard/index"
+    ],
+    "window": {
+        "backgroundColor": "#F6F6F6",
+        "backgroundTextStyle": "dark",
+        "navigationBarBackgroundColor": "#F6F6F6",
+        "navigationBarTitleText": "光明精英",
+        "navigationBarTextStyle": "black",
+        "enablePullDownRefresh": true
+    },
+    "tabBar": {
+        "color": "#2F4F4F#000000",
+        "selectedColor": "#000000",
+        "borderStyle": "black",
+        "list": [{
+                "selectedIconPath": "images/formActive.png",
+                "iconPath": "images/form.png",
+                "pagePath": "pages/index/index",
+                "text": "业绩提交"
+            },
+            {
+                "selectedIconPath": "images/achievementActive.png",
+                "iconPath": "images/achievement.png",
+                "pagePath": "pages/achievement/index",
+                "text": "业绩查询"
+            },
+            {
+                "selectedIconPath": "images/databoardActive.png",
+                "iconPath": "images/databoard.png",
+                "pagePath": "pages/databoard/index",
+                "text": "业绩看板"
+            },
+            {
+                "selectedIconPath": "images/adminActive.png",
+                "iconPath": "images/admin.png",
+                "pagePath": "pages/admin/index",
+                "text": "管理员"
+            }
+        ]
+    },
+    "sitemapLocation": "sitemap.json",
+    "style": "v2"
+}

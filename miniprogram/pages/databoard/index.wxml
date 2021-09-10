@@ -1,0 +1,42 @@
+<!-- pages/databoard.wxml -->
+<view class='head'>
+    <view class="index_container">
+        <tab-cycle id="tab-cycle-call-statistics" cur_tab_id="{{cycleId}}" bindtabclick="onClickTabCycle" />
+        <view class="flexContainer">
+            <view class="title">请选择业绩分类-支行-姓名:</view>
+            <view class="pickerContainer">
+                <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+                    <view class="picker">
+                        {{multiArray[0][multiIndex[0]]}}—{{multiArray[1][multiIndex[1]]}}—{{multiArray[2][multiIndex[2]]}}
+                    </view>
+                </picker>
+            </view>
+            <view hidden="{{cycleId !='weeks'}}">
+                <view class="container" wx:if="{{cycleId =='weeks'}}">
+                    <calendar dateType="{{'weeks'}}" bindonCallbackDate="onCallbackDate" />
+                </view>
+            </view>
+            <view hidden="{{cycleId !='month'}}">
+                <view class="container" wx:if="{{cycleId =='month'}}">
+                    <calendar id="test" dateType="{{'month'}}" bindonCallbackDate="onCallbackDate" />
+                </view>
+            </view>
+            <view hidden="{{cycleId !='quarter'}}">
+                <view class="container" wx:if="{{cycleId =='quarter'}}">
+                    <calendar dateType="{{'quarter'}}" bindonCallbackDate="onCallbackDate" />
+                </view>
+            </view>
+            <view hidden="{{cycleId !='custom'}}">
+                <view class="container" wx:if="{{cycleId =='custom'}}">
+                    <calendar dateType="{{'custom'}}" bindonCallbackDate="onCallbackDate" />
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+<view class="body">
+    <view class="keyFund">
+        <canvas canvas-id="lineCanvas" disable-scroll="true" class="canvas" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
+    </view>
+</view>
+<!-- <canvas canvas-id="regularFundCanvas" disable-scroll="true" class="canvas" bindtouchstart="touchHandler"></canvas> -->

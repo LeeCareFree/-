@@ -1,0 +1,1 @@
+"D:\微信web开发者工具\cli.bat" cloud functions deploy --e recruitment-calendar-1bd303ead54 --n quickstartFunctions --r --project "D:\Users\lee.yuanchao\WeChatProjects\bank" --report_start --report

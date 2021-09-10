@@ -1,0 +1,7 @@
+{
+    "usingComponents": {
+        "tab-cycle": "../../components/tabCycle/index",
+        "calendar": "../../components/calendar/calendar"
+    },
+    "pageOrientation": "landscape"
+}

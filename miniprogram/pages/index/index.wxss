@@ -1,0 +1,198 @@
+#myCanvas {
+    position: absolute;
+    left: 10000rpx;
+}
+
+input {
+    height: 100rpx;
+}
+
+.main .top-title {
+    padding: 40rpx 20rpx;
+    height: 34rpx;
+    line-height: 34rpx;
+    font-size: 34rpx;
+    font-weight: bold;
+    color: #333333;
+    background-color: lightblue;
+}
+
+.main .form-item {
+    height: 120rpx;
+    border-top: 1rpx solid #e3e3e3;
+    display: flex;
+    align-items: center;
+    padding-left: 40rpx;
+}
+
+.main .form-item .left {
+    width: 210rpx;
+    line-height: 120rpx;
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #666666;
+}
+
+.main .form-item .right-input {
+    font-size: 32rpx;
+    line-height: 120rpx;
+    font-weight: 500;
+    color: black;
+    width: 300rpx;
+}
+
+.main .form-item .select-box {
+    display: flex;
+}
+
+.main .form-item .select-box .more {
+    position: absolute;
+    right: 5%;
+    align-items: center;
+    width: 30rpx;
+    height: 30rpx;
+    margin-top: 35rpx;
+}
+
+.main .form-item:last-child {
+    border-bottom: 1rpx solid #e3e3e3;
+}
+
+.money-select-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 20rpx;
+}
+
+.money-right-input {
+    font-size: 32rpx;
+    line-height: 120rpx;
+    font-weight: 500;
+    color: gray;
+    width: 40rpx;
+}
+
+.money-title {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #666666;
+    padding-right: 20rpx;
+}
+
+.main .form-item .money-select-box .more {
+    width: 30rpx;
+    height: 30rpx;
+}
+
+.bottom {
+    background-color: #f6f6f6;
+    padding-top: 40rpx;
+    height: 190rpx;
+    overflow-y: hidden;
+}
+
+.bottom .save-btn {
+    margin-right: 30rpx;
+    margin-left: 30rpx;
+    width: 690rpx;
+    background: #4e87f1;
+    border-radius: 6rpx;
+    line-height: 102rpx;
+    font-size: 34rpx;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+
+/* components/model/model.wxss */
+
+
+/*遮罩层*/
+
+.modal-mask {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+
+/*遮罩内容*/
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 350rpx;
+    background-color: #fff;
+    border-radius: 10rpx;
+    text-align: center;
+}
+
+
+/*中间内容*/
+
+.main-content {
+    flex: 1;
+    height: 100%;
+    margin-top: 20rpx;
+    padding-left: 20rpx;
+    padding-right: 20rpx;
+    overflow-y: hidden;
+    max-height: 80vh;
+    /* 内容高度最高80vh 以免内容太多溢出*/
+}
+
+.main-title {
+    height: 120rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.content-detail {
+    height: 80rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+}
+
+
+/*底部按钮*/
+
+.modal-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 80rpx;
+    line-height: 100rpx;
+    border-top: 2rpx solid #D2D3D5;
+    margin-top: 30rpx;
+}
+
+.cancel-btn,
+.confirm-btn {
+    flex: 1;
+    background-color: white;
+    text-align: center;
+    height: 100rpx;
+    font-size: 36rpx;
+}
+
+.cancel-btn {
+    color: #000;
+    border-right: 2rpx solid #D2D3D5;
+}
+
+.confirm-btn {
+    color: #483D8B;
+}

@@ -1,0 +1,82 @@
+input {
+    height: 100rpx;
+}
+
+.top-title {
+    padding: 40rpx 10px;
+    height: 34rpx;
+    line-height: 34rpx;
+    font-size: 34rpx;
+    font-weight: bold;
+    color: #333333;
+    background-color: lightblue;
+}
+
+.date-picker {
+    height: 120rpx;
+    border-top: 1rpx solid #e3e3e3;
+    display: flex;
+    align-items: center;
+    padding-left: 40rpx;
+    border-bottom: 1rpx solid #e3e3e3;
+    background-color: #F6F6F6;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+.date-picker .left {
+    width: 210rpx;
+    line-height: 120rpx;
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #666666;
+}
+
+.date-picker .right-input {
+    width: 480rpx;
+    font-size: 32rpx;
+    line-height: 120rpx;
+    font-weight: 500;
+    color: black;
+}
+
+.date-picker .select-box {
+    display: flex;
+}
+
+.date-picker .select-box .more {
+    position: absolute;
+    right: 5%;
+    align-items: center;
+    width: 30rpx;
+    height: 30rpx;
+    margin-top: 35rpx;
+}
+
+.achievement-container {
+    margin: 20rpx;
+    padding: 20rpx;
+    background-color: white;
+    border-radius: 30rpx;
+}
+
+.achievement-container .list-item {
+    padding: 20rpx;
+    border-bottom: 1rpx solid wheat;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.achievement-container .title {
+    font-size: 34rpx;
+    font-weight: bold;
+}
+
+.achievement-container .content {
+    padding-left: 50rpx;
+    color: #696969;
+    font-weight: bold;
+    font-size: 32rpx;
+}
