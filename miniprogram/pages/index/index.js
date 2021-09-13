@@ -250,6 +250,16 @@ Page({
                 if (resp.result.success) {
                     wx.hideLoading()
                     this.setData({
+                        "form.sortData": "",
+                        "form.sortData": "",
+                        "form.prodData": "",
+                        "form.moneyData": "",
+                        "form.notesData": "",
+                        "form.fundRateData": "",
+                        "form.insuranceRateData": "",
+                        "form.unit": "万"
+                    })
+                    this.setData({
                         showShareModal: true,
                     })
                 }

@@ -34,9 +34,7 @@
         </view>
     </view>
 </view>
-<view class="body">
-    <view class="keyFund">
-        <canvas canvas-id="lineCanvas" disable-scroll="true" class="canvas" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
-    </view>
+<view class="body" wx:if="{{showChart}}">
+    <canvas class="canvas" canvas-id="lineCanvas" disable-scroll="true" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
 </view>
 <!-- <canvas canvas-id="regularFundCanvas" disable-scroll="true" class="canvas" bindtouchstart="touchHandler"></canvas> -->

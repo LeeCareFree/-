@@ -16,19 +16,28 @@ const structureObjFn = (arr, name) => {
     }
     return obj
 }
-const structureArrFn = (obj) => {
+const structureArrFn = (obj, type) => {
     let totalArr = []
     for (const key in obj) {
         if (Object.hasOwnProperty.call(obj, key)) {
             const element = obj[key];
             let temp = {}
+            console.log(element)
             temp.moneyData = element.reduce((pre, cur) => {
-                if (cur.unit == "元") {
-                    cur.moneyData = cur.moneyData / 10000
-                }
-                return pre + Number(cur.moneyData)
-            }, 0)
-            temp.username = element[0].bankData
+                    if (cur.unit == "元") {
+                        cur.moneyData = cur.moneyData / 10000
+                    }
+                    if (cur.sortData == "保险") {
+                        cur.moneyData = cur.moneyData * cur.insuranceRateData.substring(0, cur.insuranceRateData.lastIndexOf("\年"))
+                    }
+
+                    if (cur.sortData == "基金定投") {
+                        cur.moneyData = 1
+                    }
+                    console.log(cur.moneyData, element.length)
+                    return pre + Number(cur.moneyData)
+                }, 0)
+                // temp.username = "全部"
             temp.date = element[0].date
             totalArr.push(temp)
         }
@@ -44,16 +53,18 @@ exports.main = async(event, context) => {
         const _ = db.command
         if (event.params.bank == "全部" && event.params.username == "全部") {
             achievements = await db.collection('achievements').where({
-                date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
-                sortData: event.params.sort,
-            }).get()
-            let obj = {}
-            achievements.data.map(i => {
-                var test = i.bankData + i.date;
-                if (test in obj) obj[test].push(i);
-                else obj[test] = [i];
-            })
-            achievements.data = structureArrFn(obj)
+                    date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
+                    sortData: event.params.sort,
+                }).get()
+                // 筛选时间和银行相同的数据
+                // let obj = {}
+                // achievements.data.map(i => {
+                //     var test = i.bankData + i.date;
+                //     if (test in obj) obj[test].push(i);
+                //     else obj[test] = [i];
+                // })
+            achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
+            console.log(achievements.data)
         } else if (event.params.bank != "全部" && event.params.username == "全部") {
             achievements = await db.collection('achievements').where({
                 date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
@@ -61,6 +72,7 @@ exports.main = async(event, context) => {
                 bankData: event.params.bank
             }).get()
             achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
+            console.log(achievements.data)
         } else if (event.params.bank != "全部" && event.params.username != "全部") {
             achievements = await db.collection('achievements').where({
                 date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
@@ -68,6 +80,7 @@ exports.main = async(event, context) => {
                 bankData: event.params.bank,
                 username: event.params.username
             }).get()
+            achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
         }
         if (achievements.data.length <= 0) {
             return {

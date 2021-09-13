@@ -15,6 +15,7 @@ Page({
         tempMultiArray: [],
         tempMultiIndex: [],
         multiIndex: [0, 0, 0],
+        showChart: true
     },
     bindMultiPickerChange: function(e) {
         this.setData({
@@ -81,14 +82,17 @@ Page({
     },
     // 创建横纵轴数据
     createSimulationData: function(suorceData) {
+        console.log(suorceData)
         let categories = suorceData.map(i => {
             return exchangeTime(i.date)
         })
         let data = suorceData.map(i => {
             return Number(i.moneyData)
         })
+        let multiArray = this.data.multiArray
+        let multiIndex = this.data.multiIndex
         let username = suorceData.map(i => {
-            return i.username
+            return multiArray[2][multiIndex[2]] != "全部" ? multiArray[2][multiIndex[2]] : multiArray[1][multiIndex[1]] != "全部" ? multiArray[1][multiIndex[1]] : ""
         })
         return {
             categories: categories,
@@ -105,26 +109,28 @@ Page({
         } catch (e) {
             console.error('getSystemInfoSync failed!');
         }
-
+        let multiArray = this.data.multiArray
+        let multiIndex = this.data.multiIndex
         var simulationData = this.createSimulationData(this.data.dataBoard);
+
         keyFundChart = new wxCharts({
             canvasId: 'lineCanvas',
             type: 'line',
             categories: simulationData.categories,
             animation: false,
             series: [{
-                name: '重点基金',
+                name: this.data.multiArray[0][this.data.multiIndex[0]],
                 data: simulationData.data,
                 username: simulationData.username,
                 format: function(val, name) {
-                    return val + '万';
+                    return multiArray[0][multiIndex[0]] == "基金定投" ? val + '笔' : val + '万';
                 }
             }],
             xAxis: {
                 disableGrid: false
             },
             yAxis: {
-                title: '业绩金额 (万)',
+                title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩数额 (笔)" : '业绩金额 (万)',
                 format: function(val) {
                     return val;
                 },
@@ -162,9 +168,13 @@ Page({
             if (resp.result.success) {
                 let resData = resp.result.data.data
                 this.setData({
-                    dataBoard: resData
+                    dataBoard: resData,
+                    showChart: true
                 })
             } else {
+                this.setData({
+                    showChart: false
+                })
                 wx.showModal({
                     title: "温馨提示",
                     content: resp.result.message,
