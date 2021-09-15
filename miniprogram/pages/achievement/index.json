@@ -1,7 +1,4 @@
 {
-    "usingComponents": {
-        "load-more": "../../components/loadMore/index"
-    },
     "backgroundColor": "#F6F6F6",
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "业绩查看",

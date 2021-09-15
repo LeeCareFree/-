@@ -1,8 +1,7 @@
 <!-- pages/admin.wxml -->
-<view class="adminContainer">
+<view class="adminContainer" wx:if="{{isShowPage}}">
     <view class="top-title">管理员操作</view>
     <view class="user_info">
-        
         <view class="form-item">
             <view class="left">支行名称</view>
             <picker range="{{banks}}" bindchange="bindBankChange">
@@ -18,9 +17,9 @@
         <input wx:if="{{isAddBank}}" class="update_input" bindinput="addBankInput" value="{{addBankData}}" placeholder="请输入新增的支行" />
     </view>
     <view class="btnView">
-        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="banks">修改</text>
-        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="banks">删除</text>
-        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="banks">新增</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="banks">修改支行</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="banks">删除支行</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="banks">新增支行</text>
     </view>
     <view class="user_info">
         <view class="form-item">
@@ -38,9 +37,9 @@
         <input wx:if="{{isAddSort}}" class="update_input" bindinput="addSortInput" value="{{addSortData}}" placeholder="请输入新的业绩分类" />
     </view>
     <view class="btnView">
-        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="sorts">修改</text>
-        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="sorts">删除</text>
-        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="sorts">新增</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="sorts">修改分类</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="sorts">删除分类</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="sorts">新增分类</text>
     </view>
     <view class="title">员工信息</view>
     <view class='searchBar'>
@@ -104,26 +103,35 @@
         </view>
     </view>
     <view class='btnView'>
-        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="users">修改</text>
-        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="users">删除</text>
-        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="users">新增</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="update" data-collection="users">修改员工</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="remove" data-collection="users"> 删除员工</text>
+        <text class="handleBtn" bindtap="adminHandle" data-type="add" data-collection="users">新增员工</text>
     </view>
     <view class="title">业绩表导出</view>
-<view class="export-picker">
-    <picker mode="date" bindchange="bindStartDateChange">
-        <view class="select-box">
-            <input class="right-input" style="height:50rpx;" type="text" disabled="true" placeholder="请选择起始日期" name="date" value="{{startDate}}" />
-        </view>
-    </picker>
-    <view class="center-text">至</view>
-    <picker mode="date" bindchange="bindFinallDateChange">
-        <view class="select-box">
-            <input class="right-input" style="height: 50rpx;" type="text" disabled="true" placeholder="请选择结束日期" name="date" value="{{finallDate}}" />
-        </view>
-    </picker>
+    <view class="export-picker">
+        <picker mode="date" bindchange="bindStartDateChange">
+            <view class="select-box">
+                <input class="right-input" style="height:50rpx;" type="text" disabled="true" placeholder="请选择起始日期" name="date" value="{{startDate}}" />
+            </view>
+        </picker>
+        <view class="center-text">至</view>
+        <picker mode="date" bindchange="bindFinallDateChange">
+            <view class="select-box">
+                <input class="right-input" style="height: 50rpx;" type="text" disabled="true" placeholder="请选择结束日期" name="date" value="{{finallDate}}" />
+            </view>
+        </picker>
+    </view>
+    <view class="bottom">
+        <button class="export-btn" bind:tap="exportExcel">导出</button>
+    </view>
+    <view class="title">管理员权限</view>
+    <view class='adminAuth'>
+        <input type='text' class='authmobile-input' bindinput="adminMobileInput" placeholder="请输入需要新增或删除权限的手机号" value='{{adminMobile}}' confirm-type='search'></input>
+    </view>
+    <view class='btnView'>
+        <text class="handleBtn" bindtap="transferHandle" data-type="true">新增权限</text>
+        <text class="handleBtn" bindtap="transferHandle" data-type="false"> 删除权限</text>
+    </view>
 </view>
-
-<view class="bottom">
-<button class="export-btn" bind:tap="exportExcel">导出</button>
-</view>
+<view wx:else>
 </view>

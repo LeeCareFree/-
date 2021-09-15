@@ -1,23 +1,25 @@
+const app = getApp()
 Page({
     data: {
         username: '',
         password: ''
     },
+    onload: function() {
+        setTimeout(() => {
+            wx.hideHomeButton()
+        }, 500);
+    },
     /**
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
-        wx.hideHomeButton({
-            success: function() {
-                console.log(1);
-            },
-            fail: function() {
-                console.log(2);
-            },
-            complete: function() {
-                console.log(3);
-            }
-        });
+        setTimeout(() => {
+            wx.hideHomeButton()
+        }, 500);
+        let localData = app.getLocalUserData();
+        localData.userInfo ? wx.switchTab({
+            url: '/pages/index/index'
+        }) : ""
     },
     usernameInput: function(e) {
         this.setData({

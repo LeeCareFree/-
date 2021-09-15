@@ -64,7 +64,12 @@ Page({
                 return data
             } else {
                 setEmpty ? this.setData({ achievements: [] }) : ""
-                this.showModal(resp.result.message)
+                wx.showToast({
+                    title: resp.result.message || "",
+                    duration: 2000,
+                    icon: 'none',
+                    mask: true
+                })
             }
             wx.hideLoading()
         }).catch((e) => {

@@ -11,11 +11,23 @@
         </view>
     </block>
     <block wx:else>
-        <view class="select_date" bindtap="onClickSelectStart">{{callbackDate.startDate}}</view>
+        <view class="select_date">
+            <picker mode="date" bindchange="onClickSelectStart">
+                <view class="select-box">
+                    <input class="right-input" type="text" disabled="true" placeholder="请选择起始日期" name="date" value="{{callbackDate.startDate}}" />
+                </view>
+            </picker>
+        </view>
         <view class="select_center" bindtap="onClickSelectStart">至</view>
-        <view class="select_date" bindtap="onClickSelectEnd">{{callbackDate.endDate}}</view>
+        <view class="select_date">
+            <picker mode="date" bindchange="onClickSelectEnd">
+                <view class="select-box">
+                    <input class="right-input" type="text" disabled="true" placeholder="请选择结束日期" name="date" value="{{callbackDate.endDate}}" />
+                </view>
+            </picker>
+        </view>
         <view class="{{queryEable?'query':'query_disable'}}" bindtap="onClickQuery">查询</view>
     </block>
-    <date-picker id="start_date_picker" value="{{startDatePickerValue}}" isShow="{{startDatePickerIsShow}}" bindsureclick="onClickSureDatePicker" bindcancelclick="onClickCancelDatePicker" />
-    <date-picker id="end_date_picker" value="{{endDatePickerValue}}" isShow="{{endDatePickerIsShow}}" bindsureclick="onClickSureDatePicker" bindcancelclick="onClickCancelDatePicker" />
+    <!-- <date-picker id="start_date_picker" value="{{startDatePickerValue}}" isShow="{{startDatePickerIsShow}}" bindsureclick="onClickSureDatePicker" bindcancelclick="onClickCancelDatePicker" />
+    <date-picker id="end_date_picker" value="{{endDatePickerValue}}" isShow="{{endDatePickerIsShow}}" bindsureclick="onClickSureDatePicker" bindcancelclick="onClickCancelDatePicker" /> -->
 </view>

@@ -1,5 +1,6 @@
 // pages/admin.js
 import getTodayTime from "../../utils/getTodayTime"
+const app = getApp()
 Page({
 
     /**
@@ -29,7 +30,11 @@ Page({
         isUpdateUser: false,
         isAddUser: false,
         startDate: "",
-        finallDate: ""
+        finallDate: "",
+        // 存储移交管理员手机号
+        adminMobile: "",
+        // 是否展示页面
+        isShowPage: false
     },
     /**
      * 生命周期函数--监听页面加载
@@ -40,11 +45,23 @@ Page({
         this.serviceHandle("sorts", "get_sorts");
     },
     exportExcel: function() {
-        if (!this.data.startDate || !this.data.finallDate) {
-            this.showModal("请输入完整的起始时间！")
+        let tempStartDate = new Date(this.data.startDate)
+        let tempFinallDate = new Date(this.data.finallDate)
+        if (!tempStartDate.getTime() && !tempFinallDate.getTime()) {
+            wx.showToast({
+                title: '请输入起止时间！',
+                duration: 2000,
+                icon: 'none',
+                mask: true
+            })
+        } else if (tempStartDate.getTime() > tempFinallDate.getTime()) {
+            wx.showToast({
+                title: '结束时间不能大于开始时间,请重新选择时间！',
+                duration: 2000,
+                icon: 'none',
+                mask: true
+            })
         } else {
-            let tempStartDate = new Date(this.data.startDate)
-            let tempFinallDate = new Date(this.data.finallDate)
             wx.showLoading({
                 title: '',
             })
@@ -92,7 +109,7 @@ Page({
                         })
                     },
                 })
-                this.showModal(resp.result.message)
+                this.showToast(resp.result.message)
                 wx.hideLoading()
             }).catch((e) => {
                 wx.showModal({
@@ -146,9 +163,16 @@ Page({
             sortData: this.data.sorts[e.detail.value]
         })
     },
+    // 搜索员工信息输入框
     searchNameInput: function(e) {
         this.setData({
             searchName: e.detail.value
+        })
+    },
+    // 输入移交管理员权限的手机号
+    adminMobileInput: function(e) {
+        this.setData({
+            adminMobile: e.detail.value
         })
     },
     updateBankInput: function(e) {
@@ -233,7 +257,7 @@ Page({
                     if (this.data.bankData) {
                         this.setData({ isUpdateBank: true, isAddBank: false })
                         if (!this.data.updateBankData) {
-                            this.showModal("请先输入修改后的支行！")
+                            this.showToast("请先输入修改后的支行！")
                         } else {
                             this.serviceHandle(collection, 'update_banks', { old: this.data.bankData, new: this.data.updateBankData })
                             this.setData({
@@ -241,14 +265,14 @@ Page({
                             })
                         }
                     } else {
-                        this.showModal("请先选择支行！")
+                        this.showToast("请先选择支行！")
                     }
                 }
                 if (collection == "sorts") {
                     if (this.data.sortData) {
                         this.setData({ isUpdateSort: true, isAddSort: false })
                         if (!this.data.updateSortData) {
-                            this.showModal("请先输入修改后的业绩分类！")
+                            this.showToast("请先输入修改后的业绩分类！")
                         } else {
                             this.serviceHandle(collection, 'update_sorts', { old: this.data.sortData, new: this.data.updateSortData })
                             this.setData({
@@ -256,7 +280,7 @@ Page({
                             })
                         }
                     } else {
-                        this.showModal("请先选择业绩分类！")
+                        this.showToast("请先选择业绩分类！")
                     }
                 }
                 if (collection == "users") {
@@ -266,7 +290,7 @@ Page({
                             isAddUser: false
                         })
                         if (!this.data.updateUserInfo.username || !this.data.updateUserInfo.position || !this.data.updateUserInfo.bank || !mobileReg.test(this.data.updateUserInfo.mobile)) {
-                            this.showModal("请填写完整正确的用户信息！")
+                            this.showToast("请填写完整正确的用户信息！")
                         } else {
                             this.serviceHandle(collection, 'update_users', {
                                 old: this.data.searchName,
@@ -274,12 +298,12 @@ Page({
                                     username: this.data.updateUserInfo.username,
                                     position: this.data.updateUserInfo.position,
                                     mobile: this.data.updateUserInfo.mobile,
-                                    bank: this.data.updateUserInfo.bank
+                                    bank: this.data.updateUserInfo.bank,
                                 }
                             })
                         }
                     } else {
-                        this.showModal("请先查询用户后更新！")
+                        this.showToast("请先查询用户后更新！")
                     }
                 }
                 break;
@@ -290,7 +314,7 @@ Page({
                         isUpdateBank: false
                     })
                     if (!this.data.bankData) {
-                        this.showModal("请先选择支行！")
+                        this.showToast("请先选择支行！")
                     } else {
                         this.serviceHandle(collection, 'remove_banks', this.data.bankData)
                         this.setData({
@@ -304,7 +328,7 @@ Page({
                         isUpdateSort: false
                     })
                     if (!this.data.sortData) {
-                        this.showModal("请先选择业绩分类！")
+                        this.showToast("请先选择业绩分类！")
                     } else {
                         this.serviceHandle(collection, 'remove_sorts', this.data.sortData)
                         this.setData({
@@ -314,7 +338,7 @@ Page({
                 }
                 if (collection == "users") {
                     if (!this.data.updateUserInfo) {
-                        this.showModal("请先输入手机号查询确认后删除！")
+                        this.showToast("请先输入手机号查询确认后删除！")
                     } else {
                         this.serviceHandle(collection, 'remove_users', this.data.searchName)
                         this.setData({
@@ -328,9 +352,9 @@ Page({
                     this.setData({ isAddBank: true, isUpdateBank: false })
                     if (this.data.isAddBank) {
                         if (!this.data.addBankData) {
-                            this.showModal("请先输入新增的支行！")
+                            this.showToast("请先输入新增的支行！")
                         } else if (this.data.banks.indexOf(this.data.addBankData) > -1) {
-                            this.showModal("已经存在此支行！")
+                            this.showToast("已经存在此支行！")
                         } else {
                             this.serviceHandle(collection, 'add_banks', this.data.addBankData)
                             this.setData({
@@ -343,9 +367,9 @@ Page({
                     this.setData({ isAddSort: true, isUpdateSort: false })
                     if (this.data.isAddSort) {
                         if (!this.data.addSortData) {
-                            this.showModal("请先输入新增的业绩分类！")
+                            this.showToast("请先输入新增的业绩分类！")
                         } else if (this.data.sorts.indexOf(this.data.addSortData) > -1) {
-                            this.showModal("已经存在此业绩分类！")
+                            this.showToast("已经存在此业绩分类！")
                         } else {
                             this.serviceHandle(collection, 'add_sorts', this.data.addSortData)
                             this.setData({
@@ -360,7 +384,7 @@ Page({
                         isAddUser: true
                     })
                     if (!this.data.addUserInfo.username || !this.data.addUserInfo.position || !this.data.addUserInfo.bank || !mobileReg.test(this.data.addUserInfo.mobile)) {
-                        this.showModal("请输入完整正确的用户信息！")
+                        this.showToast("请输入完整正确的用户信息！")
                     } else {
                         this.serviceHandle(collection, 'add_users', {
                                 username: this.data.addUserInfo.username,
@@ -386,19 +410,41 @@ Page({
             showCancel: false,
         })
     },
+    showToast(msg) {
+        msg ?
+            wx.showToast({
+                title: msg || "",
+                duration: 2000,
+                icon: 'none',
+                mask: true
+            }) : ""
+    },
     //取消，返回上一页
     searchHandle: function() {
         let mobileReg = /^[1][3,4,5,7,8,9][0-9]{9}$/;
         if (!mobileReg.test(this.data.searchName)) {
-            wx.showModal({
-                title: "温馨提示",
-                content: "请输入正确的手机号查询！",
-                showCancel: false,
-            })
+            this.showToast("请输入正确的手机号查询！")
 
         } else {
             this.serviceHandle("users", "search_user", { mobile: this.data.searchName }).then(res => {
                 this.data.updateUserInfo.mobile ? this.setData({ isUpdateUser: true, isAddUser: false }) : this.setData({ isUpdateUser: false, isAddUser: false })
+            })
+        }
+    },
+    transferHandle: function(e) {
+        let mobileReg = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+        if (!mobileReg.test(this.data.adminMobile)) {
+            this.showToast("请输入正确的手机号！")
+        } else {
+            this.serviceHandle("users", "update_users", {
+                old: this.data.adminMobile,
+                new: {
+                    isAdmin: e.currentTarget.dataset.type,
+                }
+            }).then(res => {
+                this.setData({
+                    adminMobile: ""
+                })
             })
         }
     },
@@ -422,7 +468,7 @@ Page({
                             updateUserInfo: resp.result.data.data[0]
                         }) : ''
                     wx.hideLoading()
-                    this.showModal(resp.result.message)
+                    this.showToast(resp.result.message)
                     return
                 } else {
                     this.setData({
@@ -431,18 +477,14 @@ Page({
                         })
                     })
                 }
-                this.showModal(resp.result.message)
+                this.showToast(resp.result.message)
             } else {
                 name == "users" ? this.setData({ updateUserInfo: {} }) : ""
-                this.showModal(resp.result.message)
+                this.showToast(resp.result.message)
             }
             wx.hideLoading()
         }).catch((e) => {
-            wx.showModal({
-                title: "温馨提示",
-                content: '获取数据出错！',
-                showCancel: false,
-            });
+            this.showToast('获取数据出错！');
             wx.hideLoading()
         })
     },
@@ -467,7 +509,54 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function() {
+        let localData = app.getLocalUserData();
+        if (localData.userInfo.isAdmin == "true") {
+            this.setData({
+                isShowPage: true
+            })
+        } else {
+            wx.showModal({
+                title: '温馨提示',
+                content: '您没有管理员权限！',
+                showCancel: true,
+                cancelText: '取消',
+                cancelColor: '#000000',
+                confirmText: '确定',
+                confirmColor: '#3CC51F',
+                success: (result) => {
+                    if (result.confirm) {
+                        wx.switchTab({
+                            url: '/pages/index/index',
+                            success: (result) => {
 
+                            },
+                            fail: () => {},
+                            complete: () => {}
+                        });
+                    }
+                },
+                fail: () => {
+                    wx.switchTab({
+                        url: '/pages/index/index',
+                        success: (result) => {
+
+                        },
+                        fail: () => {},
+                        complete: () => {}
+                    });
+                },
+                complete: () => {
+                    wx.switchTab({
+                        url: '/pages/index/index',
+                        success: (result) => {
+
+                        },
+                        fail: () => {},
+                        complete: () => {}
+                    });
+                }
+            });
+        }
     },
 
     /**

@@ -5,7 +5,7 @@ var keyFundChart = null;
 var regularFund = null
 Page({
     data: {
-        cycleId: 'weeks',
+        cycleId: 'custom',
         date: {
             curDate: "",
             startDate: "",
@@ -175,20 +175,22 @@ Page({
                 this.setData({
                     showChart: false
                 })
-                wx.showModal({
-                    title: "温馨提示",
-                    content: resp.result.message,
-                    showCancel: false,
-                });
+                wx.showToast({
+                    title: resp.result.message || "",
+                    duration: 2000,
+                    icon: 'none',
+                    mask: true
+                })
             }
             wx.hideLoading()
         }).catch((e) => {
             console.log(e)
-            wx.showModal({
-                title: "温馨提示",
-                content: '获取数据出错！',
-                showCancel: false,
-            });
+            wx.showToast({
+                title: "获取数据出错！" || "",
+                duration: 2000,
+                icon: 'none',
+                mask: true
+            })
             wx.hideLoading()
         })
     },
@@ -235,11 +237,12 @@ Page({
             }
             wx.hideLoading()
         }).catch((e) => {
-            wx.showModal({
-                title: "温馨提示",
-                content: '获取数据出错！',
-                showCancel: false,
-            });
+            wx.showToast({
+                title: "获取数据出错！" || "",
+                duration: 2000,
+                icon: 'none',
+                mask: true
+            })
             wx.hideLoading()
         })
     },

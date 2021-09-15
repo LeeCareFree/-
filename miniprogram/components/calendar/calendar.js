@@ -49,8 +49,17 @@ Component({
          */
         onClickSelectStart: function onClickSelectStart(e) {
             this.setData({
-                startDatePickerIsShow: true,
+                "callbackDate.startDate": e.detail.value,
             });
+            if (this.data.callbackDate.startDate != '请选择开始时间' && this.data.callbackDate.endDate != '选择结束时间') {
+                this.setData({
+                    queryEable: true
+                })
+            } else {
+                this.setData({
+                    queryEable: false
+                })
+            }
         },
         /**
          * 选择结束日期
@@ -58,65 +67,38 @@ Component({
          */
         onClickSelectEnd: function onClickSelectEnd(e) {
             this.setData({
-                endDatePickerIsShow: true,
+                "callbackDate.endDate": e.detail.value,
             });
-        },
-        /**
-         * 确认选择时间
-         * @param {*} e 
-         */
-        onClickSureDatePicker: function onClickCancelDatePicker(e) {
-            console.log('datePickerOnSureClick');
-            console.log(e);
-            let updateData = {};
-            let callbackDate = this.data.callbackDate;
-            if (e.currentTarget.id == 'start_date_picker') {
-                updateData.startDatePickerValue = e.detail.value;
-                updateData.startDatePickerIsShow = false;
-                callbackDate.startDate = e.detail.value[0] + "-" + e.detail.value[1] + "-" + e.detail.value[2];
-            } else if (e.currentTarget.id == 'end_date_picker') {
-                updateData.endDatePickerValue = e.detail.value;
-                updateData.endDatePickerIsShow = false;
-                callbackDate.endDate = e.detail.value[0] + "-" + e.detail.value[1] + "-" + e.detail.value[2];
-            }
-            if (callbackDate.startDate != '请选择开始时间' && callbackDate.endDate != '选择结束时间') {
-                updateData.queryEable = true;
+            if (this.data.callbackDate.startDate != '请选择开始时间' && this.data.callbackDate.endDate != '选择结束时间') {
+                this.setData({
+                    queryEable: true
+                })
             } else {
-                updateData.queryEable = false;
+                this.setData({
+                    queryEable: false
+                })
             }
-            updateData.callbackDate = callbackDate;
-            this.setData(updateData);
-        },
-        /**
-         * 取消选择时间
-         * @param {*} e 
-         */
-        onClickCancelDatePicker: function onClickCancelDatePicker(event) {
-            console.log('datePickerOnCancelClick');
-            console.log(event);
-            this.setData({
-                startDatePickerIsShow: false,
-                endDatePickerIsShow: false
-            });
         },
         /**
          * 查询
          * @param {*} e 
          */
         onClickQuery: function onClickQuery(e) {
+            let exchangeStartDate = new Date(this.data.callbackDate.startDate)
+            let exchangeEndDate = new Date(this.data.callbackDate.endDate)
             if (!this.data.queryEable) {
                 return;
             }
-            if (!(this.data.endDatePickerValue[0] >= this.data.startDatePickerValue[0] && this.data.endDatePickerValue[1] >= this.data.startDatePickerValue[1] && this.data.endDatePickerValue[2] >= this.data.startDatePickerValue[2])) {
+            if (exchangeStartDate.getTime() > exchangeEndDate.getTime()) {
                 wx.showToast({
                     title: '结束时间不能大于开始时间,请重新选择时间！',
                     duration: 2000,
                     icon: 'none',
                     mask: true
                 })
+            } else {
+                this.triggerEvent('onCallbackDate', { date: this.data.callbackDate });
             }
-
-            this.triggerEvent('onCallbackDate', { date: this.data.callbackDate });
         },
         /**
          * 上个日期

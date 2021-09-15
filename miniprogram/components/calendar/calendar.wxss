@@ -53,18 +53,18 @@
 .select_date {
     background-color: #F9FAFB;
     border-radius: 30rpx;
-    height: 52rpx;
-    width: 220rpx;
-    font-size: 22rpx;
-    line-height: 52rpx;
+    /* height: 52rpx; */
+    /* width: 220rpx; */
+    /* padding: calc(15vmin/7.5) calc(30vmin/7.5); */
+    font-size: calc(28vmin/7.5);
+    margin-left: calc(20vmin/7.5);
     text-align: center;
     color: #555555;
     font-weight: 600;
 }
 
 .select_center {
-    font-size: 22rpx;
-    line-height: 52rpx;
+    font-size: calc(24vmin/7.5);
     text-align: center;
     color: #8A96A0;
     flex-grow: 1;
@@ -73,14 +73,12 @@
 .query,
 .query_disable {
     border-radius: 30rpx;
-    height: 52rpx;
-    width: 120rpx;
-    font-size: 24rpx;
-    line-height: 52rpx;
+    font-size: calc(30vmin/7.5);
     text-align: center;
     color: #FFFFFF;
     font-weight: 600;
-    margin-left: 32rpx;
+    padding: calc(15vmin/7.5) calc(30vmin/7.5);
+    margin-left: calc(32vmin/7.5);
 }
 
 .query {

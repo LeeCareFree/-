@@ -4,6 +4,7 @@ const { envList } = require('../../envList.js')
 import WxValidate from '../../utils/WxValidate.js'
 import loadImg from "../../utils/loadImg"
 import getTodayTime from "../../utils/getTodayTime"
+import isObjEqual from "../../utils/objEqual"
 import { createCanvasInit, fontRext } from '../../utils/canvas.js'
 Page({
     data: {
@@ -22,6 +23,7 @@ Page({
             insuranceRateData: "",
             unit: "万"
         },
+        shareInfo: {},
         rateType: "",
         fundRate: ['/天', '/周', '/月', '/年'],
         banks: [],
@@ -33,20 +35,29 @@ Page({
     onLoad: function() {
         // 本地用户信息
         let localData = app.getLocalUserData();
+        if (localData.userInfo) {
+            this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
+                isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
+                    url: '/pages/login/index'
+                })
+            });
+
+        }
         this.getInfo("banks", "get_banks");
         this.getInfo("sorts", "get_sorts");
         let that = this;
-
-        app.logincallback = () => {
-            let localData = app.getLocalUserData();
-            this.setData({...localData });
-        };
 
         this.setData({
             'form.username': localData.userInfo.username,
             'form.bankData': localData.userInfo.bank,
             'form.position': localData.userInfo.position,
             'form.date': getTodayTime()
+        })
+    },
+    onShow: function() {
+        let localData = app.getLocalUserData();
+        localData.userInfo ? "" : wx.redirectTo({
+            url: '/pages/login/index'
         })
     },
     usernameInput: function(e) {
@@ -75,7 +86,7 @@ Page({
         wx.showLoading({
             title: '加载中',
         })
-        wx.cloud.callFunction({
+        return wx.cloud.callFunction({
             name: name,
             data: {
                 type: type,
@@ -86,8 +97,9 @@ Page({
             if (resp.result.success) {
                 if (name == "users") {
                     that.setData({
-                        userInfo: resp.result.data
+                        userInfo: data[0]
                     })
+                    return resp.result.data
                 } else {
                     that.setData({
                         [name]: data.map(item => {
@@ -220,9 +232,6 @@ Page({
                 this.showModal(error.msg)
                 return false
             }
-            this.showModal({
-                msg: '提交成功'
-            })
             wx.showLoading({
                     title: '加载中',
                 })
@@ -249,16 +258,6 @@ Page({
             }).then((resp) => {
                 if (resp.result.success) {
                     wx.hideLoading()
-                    this.setData({
-                        "form.sortData": "",
-                        "form.sortData": "",
-                        "form.prodData": "",
-                        "form.moneyData": "",
-                        "form.notesData": "",
-                        "form.fundRateData": "",
-                        "form.insuranceRateData": "",
-                        "form.unit": "万"
-                    })
                     this.setData({
                         showShareModal: true,
                     })
@@ -344,11 +343,21 @@ Page({
                                 let finallData = completeDate.substring(completeDate.indexOf('年') + 1, completeDate.length)
                                 resolve({
                                     title: `${that.data.form.username}${finallData}业绩分享`,
+                                    path: "/pages/login/index",
                                     imageUrl: res.tempFilePath
                                 })
                             },
                             fail: function(res) {
-                                console.log("err", res);
+                                that.setData({
+                                    "form.sortData": "",
+                                    "form.sortData": "",
+                                    "form.prodData": "",
+                                    "form.moneyData": "",
+                                    "form.notesData": "",
+                                    "form.fundRateData": "",
+                                    "form.insuranceRateData": "",
+                                    "form.unit": "万"
+                                })
                             },
                             complete: function() {
                                 that.setData({

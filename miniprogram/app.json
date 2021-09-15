@@ -1,10 +1,10 @@
 {
     "pages": [
         "pages/index/index",
-        "pages/login/index",
         "pages/achievement/index",
         "pages/admin/index",
-        "pages/databoard/index"
+        "pages/databoard/index",
+        "pages/login/index"
     ],
     "window": {
         "backgroundColor": "#F6F6F6",
@@ -44,6 +44,7 @@
             }
         ]
     },
+    "usingComponents": {},
     "sitemapLocation": "sitemap.json",
     "style": "v2"
 }

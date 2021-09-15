@@ -96,6 +96,24 @@ input {
     -moz-box-sizing: border-box;
 }
 
+.mobileInput {
+    position: relative;
+    width: 510rpx;
+    height: 70rpx;
+    margin: 0 auto;
+    -webkit-border-radius: 70rpx;
+    -moz-border-radius: 70rpx;
+    border-radius: 70rpx;
+    background: 43rpx center #f6f6f6;
+    font-size: 28rpx;
+    line-height: 62rpx;
+    color: #8a8a8a;
+    padding: 0 30rpx 0 80rpx;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
 .searchBarInput_in {
     background-color: transparent;
     height: 70rpx;
@@ -208,9 +226,9 @@ input {
 
 .bottom {
     background-color: #fff;
-    margin-bottom: 40rpx;
     height: 100rpx;
     overflow-y: hidden;
+    border-bottom: 1rpx solid #e3e3e3;
 }
 
 .bottom .export-btn {
@@ -223,4 +241,16 @@ input {
     font-size: 34rpx;
     font-weight: bold;
     color: #ffffff;
+}
+
+.adminAuth {
+    border: 1rpx solid gray;
+    margin: 30rpx;
+    padding: 10rpx;
+    border-radius: 30rpx;
+}
+
+.authmobile-input {
+    height: 60rpx;
+    font-size: 30rpx;
 }
