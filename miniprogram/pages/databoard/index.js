@@ -5,7 +5,7 @@ var keyFundChart = null;
 var regularFund = null
 Page({
     data: {
-        cycleId: 'custom',
+        cycleId: 'weeks',
         date: {
             curDate: "",
             startDate: "",

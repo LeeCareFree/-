@@ -1,13 +1,20 @@
 const app = getApp()
 Page({
     data: {
+        userInfo: {},
         username: '',
         password: ''
     },
     onload: function() {
-        setTimeout(() => {
-            wx.hideHomeButton()
-        }, 500);
+        let localData = app.getLocalUserData();
+        if (localData.userInfo) {
+            this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
+                isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
+                    url: '/pages/login/index'
+                })
+            });
+
+        }
     },
     /**
      * 生命周期函数--监听页面显示
@@ -16,10 +23,36 @@ Page({
         setTimeout(() => {
             wx.hideHomeButton()
         }, 500);
-        let localData = app.getLocalUserData();
-        localData.userInfo ? wx.switchTab({
-            url: '/pages/index/index'
-        }) : ""
+    },
+    getInfo: function(name, type, params) {
+        let that = this
+        wx.showLoading({
+            title: '加载中',
+        })
+        return wx.cloud.callFunction({
+            name: name,
+            data: {
+                type: type,
+                params: {...params }
+            }
+        }).then((resp) => {
+            let data = resp.result.data.data
+            if (resp.result.success) {
+                if (name == "users") {
+                    that.setData({
+                        userInfo: data[0]
+                    })
+                    wx.hideLoading()
+                    return resp.result.data
+                }
+            } else {
+                that.showModal(resp.result.message)
+            }
+            wx.hideLoading()
+        }).catch((e) => {
+            that.showModal("获取数据出错！")
+            wx.hideLoading()
+        })
     },
     usernameInput: function(e) {
         this.setData({

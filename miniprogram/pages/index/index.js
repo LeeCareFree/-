@@ -5,6 +5,7 @@ import WxValidate from '../../utils/WxValidate.js'
 import loadImg from "../../utils/loadImg"
 import getTodayTime from "../../utils/getTodayTime"
 import isObjEqual from "../../utils/objEqual"
+import getByteLen from "../../utils/getByteLen"
 import { createCanvasInit, fontRext } from '../../utils/canvas.js'
 Page({
     data: {
@@ -55,10 +56,7 @@ Page({
         })
     },
     onShow: function() {
-        let localData = app.getLocalUserData();
-        localData.userInfo ? "" : wx.redirectTo({
-            url: '/pages/login/index'
-        })
+
     },
     usernameInput: function(e) {
         this.setData({
@@ -175,7 +173,7 @@ Page({
             },
             prodData: {
                 required: true,
-                maxlength: 20
+                maxlength: 10
             },
 
             date: {
@@ -189,6 +187,7 @@ Page({
         data.sortData != "一体化联动" ? rules = Object.assign({}, rules, {
             money: {
                 required: true,
+                maxlength: 4,
                 number: true
             },
         }) : ""
@@ -209,6 +208,7 @@ Page({
             },
             money: {
                 required: '请填写金额！',
+                maxlength: "超出字数！",
                 number: '金额只能输入数字！'
             },
             date: {
@@ -301,26 +301,29 @@ Page({
                     Promise.all(imgs.map((src) => loadImg(canvas, src))).then(res => {
                         const data = this.data.form
                         const xPosition = (320 / 2 - 15)
-                        const space = 30
+                        const space = 35
                             // ctx.drawImage(res[0], 60, 20, 30, 30);
-                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * space, 20, 30, 30);
-                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * space, 20, 30, 30);
+                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
+                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
                         // ctx.drawImage(res[0], 260, 20, 30, 30);
-                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 70, 30, 30);
-                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 70, 30, 30);
-                        let lengths = data.prodData.length + (data.moneyData.length * 2) + data.unit.length + data.insuranceRateData.length + data.fundRateData.length
-                        ctx.drawImage(res[2], xPosition - ((data.sortData != "一体化联动" ? lengths : data.prodData.length) / 2) * 30, 120, 30, 30);
-                        ctx.drawImage(res[2], xPosition + ((data.sortData != "一体化联动" ? lengths : data.prodData.length) / 2) * 30, 120, 30, 30);
-                        ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
-                        ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
-                        ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
-                        ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
+                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
+                        ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
+                        ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
+                        ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, 190, 30, 30)
+                        ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, 190, 30, 30)
+                            // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
+                            // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
+                            // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
+                            // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
                         ctx.fillStyle = "#000000";
-                        ctx.font = '22px sans-serif';
+                        ctx.font = '24px sans-serif';
                         ctx.textAlign = "center";
-                        ctx.fillText(`${this.data.form.sortData}喜报`, 160, 40);
-                        ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 90);
-                        (this.data.form.sortData == "一体化联动") ? ctx.fillText(this.data.form.prodData, 160, 140): ctx.fillText(`${this.data.form.prodData} ${this.data.form.moneyData}${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, 140);
+                        ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
+                        ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
+                        ctx.fillText(this.data.form.prodData, 160, 160);
+                        ctx.fillText(`${this.data.form.moneyData}${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, 210);
                         // const a = {
                         //     type: "text",
                         //     x: 320 / 2,
@@ -332,8 +335,8 @@ Page({
                         //     text: `${data.sortData !== "一体化联动" ? data.prodData + data.moneyData + data.unit + data.insuranceRateData + data.fundRateData : data.prodData}`
                         // }
                         // this.drawText(a, ctx)
-                        ctx.fillText(`冲刺全年`, 160, 190);
-                        ctx.fillText(`刻不容缓`, 160, 230);
+                        // ctx.fillText(`冲刺全年`, 160, 190);
+                        // ctx.fillText(`刻不容缓`, 160, 230);
                         const that = this;
                         wx.canvasToTempFilePath({
                             fileType: "png",

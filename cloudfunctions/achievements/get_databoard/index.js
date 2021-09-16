@@ -51,11 +51,14 @@ const db = cloud.database()
 exports.main = async(event, context) => {
     try {
         const _ = db.command
-        if (event.params.bank == "全部" && event.params.username == "全部") {
-            achievements = await db.collection('achievements').where({
-                    date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
-                    sortData: event.params.sort,
-                }).get()
+        let queryObj = {
+            date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
+            sortData: event.params.sort,
+        }
+        if (event.params.bank == "全部" && event.params.username !== "全部") {
+            queryObj = Object.assign({}, queryObj, {
+                    username: event.params.username
+                })
                 // 筛选时间和银行相同的数据
                 // let obj = {}
                 // achievements.data.map(i => {
@@ -63,25 +66,18 @@ exports.main = async(event, context) => {
                 //     if (test in obj) obj[test].push(i);
                 //     else obj[test] = [i];
                 // })
-            achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
-            console.log(achievements.data)
         } else if (event.params.bank != "全部" && event.params.username == "全部") {
-            achievements = await db.collection('achievements').where({
-                date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
-                sortData: event.params.sort,
+            queryObj = Object.assign({}, queryObj, {
                 bankData: event.params.bank
-            }).get()
-            achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
-            console.log(achievements.data)
+            })
         } else if (event.params.bank != "全部" && event.params.username != "全部") {
-            achievements = await db.collection('achievements').where({
-                date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
-                sortData: event.params.sort,
+            queryObj = Object.assign({}, queryObj, {
                 bankData: event.params.bank,
                 username: event.params.username
-            }).get()
-            achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
+            })
         }
+        achievements = await db.collection('achievements').where({...queryObj }).get()
+        achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
         if (achievements.data.length <= 0) {
             return {
                 success: false,
