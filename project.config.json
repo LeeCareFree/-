@@ -38,7 +38,7 @@
   },
   "appid": "wxf39b6c438ff553ce",
   "projectname": "bank",
-  "libVersion": "2.19.4",
+  "libVersion": "2.19.2",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
   "condition": {
     "search": {

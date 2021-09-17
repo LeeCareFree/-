@@ -56,7 +56,15 @@ Page({
         })
     },
     onShow: function() {
+        let localData = app.getLocalUserData();
+        if (localData.userInfo) {
+            this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
+                isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
+                    url: '/pages/login/index'
+                })
+            });
 
+        }
     },
     usernameInput: function(e) {
         this.setData({
@@ -91,12 +99,13 @@ Page({
                 params: {...params }
             }
         }).then((resp) => {
-            let data = resp.result.data.data
             if (resp.result.success) {
+                let data = resp.result.data.data
                 if (name == "users") {
                     that.setData({
                         userInfo: data[0]
                     })
+                    wx.hideLoading()
                     return resp.result.data
                 } else {
                     that.setData({
@@ -104,13 +113,38 @@ Page({
                             return item.name
                         })
                     })
+                    wx.hideLoading()
                 }
+                wx.hideLoading()
             } else {
-                that.showModal(resp.result.message)
+                // wx.showToast({
+                //     title: resp.result.message || "获取数据出错！",
+                //     icon: 'none',
+                //     image: '',
+                //     duration: 1500,
+                //     mask: false,
+                //     success: (result) => {
+
+                //     },
+                //     fail: () => {},
+                //     complete: () => {}
+                // });
             }
             wx.hideLoading()
         }).catch((e) => {
-            that.showModal("获取数据出错！")
+            wx.showToast({
+                title: '"获取数据出错！"',
+                icon: 'none',
+                image: '',
+                duration: 1000,
+                mask: false,
+                success: (result) => {
+
+                },
+                fail: () => {},
+                complete: () => {}
+            });
+            // that.showModal()
             wx.hideLoading()
         })
     },
@@ -224,7 +258,7 @@ Page({
         this.initValidate(e.detail.value) //验证规则函数
         console.log('form发生了submit事件，携带的数据为：', e)
         const params = e.detail.value
-        if ((params.sortData == "基金" || params.sortData == "保险") && !params.rateData) {
+        if ((params.sortData == "基金定投" || params.sortData == "保险") && !params.rateData) {
             this.showModal("请选择频率！")
         } else {
             if (!this.WxValidate.checkForm(params)) {
@@ -293,6 +327,7 @@ Page({
                     canvas.height = height * dpr
                     ctx.scale(dpr, dpr)
                     let imgs = [
+                        "../../images/bg.png",
                         "../../images/prize.png",
                         "../../images/salute.png",
                         "../../images/medal.png",
@@ -302,21 +337,21 @@ Page({
                         const data = this.data.form
                         const xPosition = (320 / 2 - 15)
                         const space = 35
-                            // ctx.drawImage(res[0], 60, 20, 30, 30);
-                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
-                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
-                        // ctx.drawImage(res[0], 260, 20, 30, 30);
-                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
-                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        ctx.drawImage(res[0], 0, 0, 320, 256);
+                        ctx.drawImage(res[1], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
+                        ctx.drawImage(res[1], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
+                        ctx.drawImage(res[2], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        ctx.drawImage(res[2], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
                         let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
-                        ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
-                        ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
-                        ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, 190, 30, 30)
-                        ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, 190, 30, 30)
-                            // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
-                            // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
-                            // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
-                            // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
+                        ctx.drawImage(res[3], xPosition - ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
+                        ctx.drawImage(res[3], xPosition + ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
+                        ctx.drawImage(res[3], xPosition - ((lengths + 0.5) / 2) * space, 190, 30, 30)
+                        ctx.drawImage(res[3], xPosition + ((lengths + 0.5) / 2) * space, 190, 30, 30)
+
+                        // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
+                        // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
+                        // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
+                        // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
                         ctx.fillStyle = "#000000";
                         ctx.font = '24px sans-serif';
                         ctx.textAlign = "center";
@@ -346,7 +381,7 @@ Page({
                                 let finallData = completeDate.substring(completeDate.indexOf('年') + 1, completeDate.length)
                                 resolve({
                                     title: `${that.data.form.username}${finallData}业绩分享`,
-                                    path: "/pages/login/index",
+                                    path: "/pages/index/index",
                                     imageUrl: res.tempFilePath
                                 })
                             },

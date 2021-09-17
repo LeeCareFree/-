@@ -1,4 +1,5 @@
 const app = getApp()
+import isObjEqual from "../../utils/objEqual"
 Page({
     data: {
         userInfo: {},
@@ -9,9 +10,9 @@ Page({
         let localData = app.getLocalUserData();
         if (localData.userInfo) {
             this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
-                isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
-                    url: '/pages/login/index'
-                })
+                isObjEqual(this.data.userInfo, localData.userInfo) ? wx.switchTab({
+                    url: '/pages/index/index',
+                }) : ''
             });
 
         }
@@ -23,6 +24,15 @@ Page({
         setTimeout(() => {
             wx.hideHomeButton()
         }, 500);
+        let localData = app.getLocalUserData();
+        if (localData.userInfo) {
+            this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
+                isObjEqual(this.data.userInfo, localData.userInfo) ? wx.switchTab({
+                    url: '/pages/index/index',
+                }) : ''
+            });
+
+        }
     },
     getInfo: function(name, type, params) {
         let that = this
@@ -50,7 +60,18 @@ Page({
             }
             wx.hideLoading()
         }).catch((e) => {
-            that.showModal("获取数据出错！")
+            // wx.showToast({
+            //     title: '"获取数据出错！"',
+            //     icon: 'none',
+            //     image: '',
+            //     duration: 1500,
+            //     mask: false,
+            //     success: (result) => {
+
+            //     },
+            //     fail: () => {},
+            //     complete: () => {}
+            // });
             wx.hideLoading()
         })
     },

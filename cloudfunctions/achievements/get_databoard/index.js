@@ -22,7 +22,6 @@ const structureArrFn = (obj, type) => {
         if (Object.hasOwnProperty.call(obj, key)) {
             const element = obj[key];
             let temp = {}
-            console.log(element)
             temp.moneyData = element.reduce((pre, cur) => {
                     if (cur.unit == "元") {
                         cur.moneyData = cur.moneyData / 10000
@@ -34,7 +33,6 @@ const structureArrFn = (obj, type) => {
                     if (cur.sortData == "基金定投") {
                         cur.moneyData = 1
                     }
-                    console.log(cur.moneyData, element.length)
                     return pre + Number(cur.moneyData)
                 }, 0)
                 // temp.username = "全部"
@@ -46,8 +44,7 @@ const structureArrFn = (obj, type) => {
 }
 
 const db = cloud.database()
-
-// 修改数据库信息云函数入口函数
+    // 修改数据库信息云函数入口函数
 exports.main = async(event, context) => {
     try {
         const _ = db.command
@@ -76,7 +73,7 @@ exports.main = async(event, context) => {
                 username: event.params.username
             })
         }
-        achievements = await db.collection('achievements').where({...queryObj }).get()
+        achievements = await db.collection('achievements').where({...queryObj }).orderBy('date', 'asc').get()
         achievements.data = structureArrFn(structureObjFn(achievements.data, "date"))
         if (achievements.data.length <= 0) {
             return {

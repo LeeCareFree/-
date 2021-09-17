@@ -1,5 +1,6 @@
 //app.js
 import config from './config';
+import isObjEqual from "./utils/objEqual"
 App({
     onLaunch: function() {
         this.globalData = {}
@@ -18,43 +19,91 @@ App({
             })
         }
         let localData = this.getLocalUserData();
-        if (localData.userInfo.mobile) {
+        if (localData.userInfo) {
+            wx.showLoading({
+                title: '加载中',
+            })
             wx.cloud.callFunction({
-                name: 'users',
+                name: "users",
                 data: {
-                    type: 'login_register',
-                    params: { username: localData.userInfo.username, password: localData.userInfo.mobile.substring(localData.userInfo.mobile.length - 4) }
+                    type: "search_user",
+                    params: { mobile: localData.userInfo.mobile }
                 }
             }).then((resp) => {
-                if (resp.result.success) {} else {
-                    wx.showModal({
-                        title: '温馨提示',
-                        content: '登录密码已更改，请重新登录！',
-                        showCancel: false,
-                        confirmText: '重新登录',
-                        success: (result) => {
-                            if (result.confirm) {
-                                wx.redirectTo({
-                                    url: '/pages/login/index' //[登录页面]
-                                })
-                            }
-                        },
-                        fail: () => {},
-                        complete: () => {}
-                    });
+                let data = resp.result.data.data
+                if (resp.result.success) {
+                    isObjEqual(data[0], localData.userInfo) ? wx.switchTab({
+                        url: '/pages/index/index',
+                    }) : wx.redirectTo({
+                        url: '/pages/login/index'
+                    })
+                    wx.hideLoading()
+                } else {
+                    that.showModal(resp.result.message)
                 }
                 wx.hideLoading()
             }).catch((e) => {
-                wx.showModal({
-                    title: '密码错误',
-                    content: '密码错误' //session中用户名和密码不为空触发
-                });
+                // wx.showToast({
+                //     title: '"获取数据出错！"',
+                //     icon: 'none',
+                //     image: '',
+                //     duration: 1500,
+                //     mask: false,
+                //     success: (result) => {
+
+                //     },
+                //     fail: () => {},
+                //     complete: () => {}
+                // });
+                wx.hideLoading()
             })
         } else {
             wx.redirectTo({
-                url: '/pages/login/index' //[登录页面]
+                url: '/pages/login/index'
             })
         }
+        // let localData = this.getLocalUserData();
+        // if (localData.userInfo.mobile) {
+        //     wx.cloud.callFunction({
+        //         name: 'users',
+        //         data: {
+        //             type: 'search_user',
+        //             params: { mobile: localData.userInfo.mobile }
+        //         }
+        //     }).then((resp) => {
+        //         if (resp.result.success) {
+        //             if(localData.userInfo.mobile != resp.result.data.data[0]){
+        //                 wx.setStorageSync('userInfo', resp.result.data);
+        //             }
+        //          } else {
+        //             wx.showModal({
+        //                 title: '温馨提示',
+        //                 content: '登录密码已更改，请重新登录！',
+        //                 showCancel: false,
+        //                 confirmText: '重新登录',
+        //                 success: (result) => {
+        //                     if (result.confirm) {
+        //                         wx.redirectTo({
+        //                             url: '/pages/login/index' //[登录页面]
+        //                         })
+        //                     }
+        //                 },
+        //                 fail: () => { },
+        //                 complete: () => { }
+        //             });
+        //         }
+        //         wx.hideLoading()
+        //     }).catch((e) => {
+        //         wx.showModal({
+        //             title: '密码错误',
+        //             content: '密码错误' //session中用户名和密码不为空触发
+        //         });
+        //     })
+        // } else {
+        //     wx.redirectTo({
+        //         url: '/pages/login/index' //[登录页面]
+        //     })
+        // }
     },
     getLocalUserData: function() {
         let localData = {};

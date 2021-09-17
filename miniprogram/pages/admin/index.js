@@ -50,14 +50,14 @@ Page({
         if (!tempStartDate.getTime() && !tempFinallDate.getTime()) {
             wx.showToast({
                 title: '请输入起止时间！',
-                duration: 2000,
+                duration: 1000,
                 icon: 'none',
                 mask: true
             })
         } else if (tempStartDate.getTime() > tempFinallDate.getTime()) {
             wx.showToast({
                 title: '结束时间不能大于开始时间,请重新选择时间！',
-                duration: 2000,
+                duration: 1000,
                 icon: 'none',
                 mask: true
             })
@@ -414,7 +414,7 @@ Page({
         msg ?
             wx.showToast({
                 title: msg || "",
-                duration: 2000,
+                duration: 1000,
                 icon: 'none',
                 mask: true
             }) : ""
@@ -467,8 +467,8 @@ Page({
                         this.setData({
                             updateUserInfo: resp.result.data.data[0]
                         }) : ''
-                    wx.hideLoading()
                     this.showToast(resp.result.message)
+                    wx.hideLoading()
                     return
                 } else {
                     this.setData({

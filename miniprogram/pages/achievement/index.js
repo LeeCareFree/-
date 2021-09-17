@@ -66,7 +66,7 @@ Page({
                 setEmpty ? this.setData({ achievements: [] }) : ""
                 wx.showToast({
                     title: resp.result.message || "",
-                    duration: 2000,
+                    duration: 1000,
                     icon: 'none',
                     mask: true
                 })

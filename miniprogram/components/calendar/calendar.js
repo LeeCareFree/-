@@ -92,7 +92,7 @@ Component({
             if (exchangeStartDate.getTime() > exchangeEndDate.getTime()) {
                 wx.showToast({
                     title: '结束时间不能大于开始时间,请重新选择时间！',
-                    duration: 2000,
+                    duration: 1000,
                     icon: 'none',
                     mask: true
                 })

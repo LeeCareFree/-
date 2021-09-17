@@ -177,7 +177,7 @@ Page({
                 })
                 wx.showToast({
                     title: resp.result.message || "",
-                    duration: 2000,
+                    duration: 1000,
                     icon: 'none',
                     mask: true
                 })
@@ -187,7 +187,7 @@ Page({
             console.log(e)
             wx.showToast({
                 title: "获取数据出错！" || "",
-                duration: 2000,
+                duration: 1000,
                 icon: 'none',
                 mask: true
             })
@@ -239,7 +239,7 @@ Page({
         }).catch((e) => {
             wx.showToast({
                 title: "获取数据出错！" || "",
-                duration: 2000,
+                duration: 1000,
                 icon: 'none',
                 mask: true
             })
