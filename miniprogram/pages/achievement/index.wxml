@@ -49,4 +49,8 @@
         <view class="title">备注：</view>
         <view class="content">{{item.notesData}}</view>
     </view>
+    <view class='btnView' wx:if="{{userInfo.mobile == item.mobile}}">
+        <text class="handleBtn" bindtap="changeHandle" data-type="fix" data-item="{{item}}">修改业绩</text>
+        <text class="handleBtn" bindtap="changeHandle" data-type="remove" data-item="{{item}}">删除业绩</text>
+    </view>
 </view>

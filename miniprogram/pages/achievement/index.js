@@ -1,5 +1,6 @@
 // pages/form.js
 import getTodayTime from "../../utils/getTodayTime"
+const app = getApp()
 Page({
 
     /**
@@ -11,13 +12,18 @@ Page({
         pageNum: 1,
         showLoad: false,
         // 文字和图切换
-        showIcon: false
+        showIcon: false,
+        userInfo: {}
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function(options) {
+        let localData = app.getLocalUserData();
+        this.setData({
+            userInfo: localData.userInfo || {}
+        })
         let tempDate = new Date(this.data.date)
         this.serviceHandle("achievements", "get_achievement", { date: tempDate.getTime(), pageNum: 1 })
     },
@@ -27,6 +33,50 @@ Page({
         this.serviceHandle("achievements", "get_achievement", { date: tempDate.getTime(), pageNum: 1 }, true)
         this.setData({
             date: e.detail.value
+        })
+    },
+    changeHandle: function(e) {
+        let type = e.currentTarget.dataset.type
+        let item = e.currentTarget.dataset.item
+        switch (type) {
+            case "fix":
+                let parser = JSON.stringify(item);
+                wx.reLaunch({
+                    url: '/pages/index/index?data=' + parser,
+                    success: (result) => {
+
+                    },
+                    fail: () => {},
+                    complete: () => {}
+                });
+                break;
+            case "remove":
+                this.removerService("achievements", "remove_achievement", { _id: item._id }).then(r => {
+                    this.setData({
+                        achievements: this.data.achievements.filter(i => i._id !== item._id)
+                    })
+                })
+                break;
+            default:
+                break;
+        }
+    },
+    removerService: function(name, type, params) {
+        wx.showLoading({
+            title: '',
+        })
+        return wx.cloud.callFunction({
+            name: name,
+            data: {
+                type: type,
+                params: params || {}
+            }
+        }).then((resp) => {
+            this.showToast(resp.result.message)
+            wx.hideLoading()
+        }).catch((e) => {
+            this.showToast('数据出错！');
+            wx.hideLoading()
         })
     },
     // 提示框函数
@@ -64,18 +114,22 @@ Page({
                 return data
             } else {
                 setEmpty ? this.setData({ achievements: [] }) : ""
-                wx.showToast({
-                    title: resp.result.message || "",
-                    duration: 1000,
-                    icon: 'none',
-                    mask: true
-                })
+                this.showToast(resp.result.message || "")
             }
             wx.hideLoading()
         }).catch((e) => {
             this.showModal("获取数据出错！")
             wx.hideLoading()
         })
+    },
+    showToast(msg) {
+        msg ?
+            wx.showToast({
+                title: msg || "",
+                duration: 1000,
+                icon: 'none',
+                mask: true
+            }) : ""
     },
     /**
      * 生命周期函数--监听页面初次渲染完成

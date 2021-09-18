@@ -31,32 +31,25 @@ Page({
         sorts: [],
         insuranceRate: ["1年", "2年", "3年", "4年", "5年", "6年", "7年", "8年", "9年", "10年"],
         units: ["万", "元"],
-        showShareModal: false
+        showShareModal: false,
+        isFix: false
     },
-    onLoad: function() {
-        // 本地用户信息
-        let localData = app.getLocalUserData();
-        if (localData.userInfo) {
-            this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
-                isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
-                    url: '/pages/login/index'
-                })
-            });
-
-        }
+    onLoad: function(options) {
+        options.data ? this.setData({
+            form: {...JSON.parse(options.data) },
+            isFix: true
+        }) : {}; //获取参数
         this.getInfo("banks", "get_banks");
         this.getInfo("sorts", "get_sorts");
-        let that = this;
-
+    },
+    onShow: function() {
+        let localData = app.getLocalUserData();
         this.setData({
             'form.username': localData.userInfo.username,
             'form.bankData': localData.userInfo.bank,
             'form.position': localData.userInfo.position,
             'form.date': getTodayTime()
         })
-    },
-    onShow: function() {
-        let localData = app.getLocalUserData();
         if (localData.userInfo) {
             this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
                 isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
@@ -271,31 +264,47 @@ Page({
                 })
                 // 转换时间戳上传
             let exchangeDate = new Date(this.data.form.date)
+            let paramsObj = {
+                date: exchangeDate.getTime(),
+                bankData: this.data.form.bankData,
+                username: this.data.form.username,
+                sortData: this.data.form.sortData,
+                prodData: this.data.form.prodData,
+                position: this.data.form.position,
+                moneyData: this.data.form.moneyData,
+                notesData: this.data.form.notesData,
+                fundRateData: this.data.form.fundRateData,
+                insuranceRateData: this.data.form.insuranceRateData,
+                unit: this.data.form.unit,
+                mobile: this.data.userInfo.mobile || ""
+            }
             wx.cloud.callFunction({
                 name: "achievements",
                 data: {
-                    type: "set_achievement",
-                    params: {
-                        date: exchangeDate.getTime(),
-                        bankData: this.data.form.bankData,
-                        username: this.data.form.username,
-                        sortData: this.data.form.sortData,
-                        prodData: this.data.form.prodData,
-                        position: this.data.form.position,
-                        moneyData: this.data.form.moneyData,
-                        notesData: this.data.form.notesData,
-                        fundRateData: this.data.form.fundRateData,
-                        insuranceRateData: this.data.form.insuranceRateData,
-                        unit: this.data.form.unit,
-                    }
+                    type: this.data.isFix ? "update_achievement" : "set_achievement",
+                    params: this.data.isFix ? { old: this.data.form._id || "", new: paramsObj } : {...paramsObj }
                 }
             }).then((resp) => {
                 if (resp.result.success) {
                     wx.hideLoading()
                     this.setData({
+                        isFix: false,
                         showShareModal: true,
                     })
                 }
+                wx.hideLoading()
+                wx.showToast({
+                    title: resp.result.message || "获取数据出错！",
+                    icon: 'none',
+                    image: '',
+                    duration: 1000,
+                    mask: false,
+                    success: (result) => {
+
+                    },
+                    fail: () => {},
+                    complete: () => {}
+                });
             }).catch((e) => {
                 console.log(e)
                 this.showModal('获取数据出错！')
@@ -327,7 +336,6 @@ Page({
                     canvas.height = height * dpr
                     ctx.scale(dpr, dpr)
                     let imgs = [
-                        "../../images/bg.png",
                         "../../images/prize.png",
                         "../../images/salute.png",
                         "../../images/medal.png",
@@ -337,23 +345,22 @@ Page({
                         const data = this.data.form
                         const xPosition = (320 / 2 - 15)
                         const space = 35
-                        ctx.drawImage(res[0], 0, 0, 320, 256);
-                        ctx.drawImage(res[1], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
-                        ctx.drawImage(res[1], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
-                        ctx.drawImage(res[2], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
-                        ctx.drawImage(res[2], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
+                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
+                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
                         let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
-                        ctx.drawImage(res[3], xPosition - ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
-                        ctx.drawImage(res[3], xPosition + ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
-                        ctx.drawImage(res[3], xPosition - ((lengths + 0.5) / 2) * space, 190, 30, 30)
-                        ctx.drawImage(res[3], xPosition + ((lengths + 0.5) / 2) * space, 190, 30, 30)
+                        ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
+                        ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
+                        ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, 190, 30, 30)
+                        ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, 190, 30, 30)
 
                         // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
                         // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
                         // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
                         // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
                         ctx.fillStyle = "#000000";
-                        ctx.font = '24px sans-serif';
+                        ctx.font = '24px Times New Roman';
                         ctx.textAlign = "center";
                         ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
                         ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
@@ -386,6 +393,7 @@ Page({
                                 })
                             },
                             fail: function(res) {
+                                console.log(111)
                                 that.setData({
                                     "form.sortData": "",
                                     "form.sortData": "",
@@ -553,10 +561,17 @@ Page({
             promise
         })
     },
-    clickMask: function() {
-        this.setData({ showShareModal: false })
-    },
     cancel: function() {
+        this.setData({
+            "form.sortData": "",
+            "form.sortData": "",
+            "form.prodData": "",
+            "form.moneyData": "",
+            "form.notesData": "",
+            "form.fundRateData": "",
+            "form.insuranceRateData": "",
+            "form.unit": "万"
+        })
         this.setData({ showShareModal: false })
     },
     confirm: function() {

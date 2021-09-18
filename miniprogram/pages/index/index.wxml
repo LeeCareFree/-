@@ -1,7 +1,7 @@
 <canvas class="canvas" id='myCanvas' style="width: 320px;height: 256px;background-color:red;" type='2d'></canvas>
 <form bindsubmit="formSubmit">
   <view class="main">
-    <view class="top-title">填写业绩信息</view>
+    <view class="top-title">{{isFix ? "修改业绩信息" : "填写业绩信息"}}</view>
     <view class="form-content">
       <view class="form-item">
         <view class="left">业绩时间</view>
@@ -50,7 +50,8 @@
         <input class="right-input" name="money" value="{{form.moneyData}}" type="number" bindinput="moneyInput" placeholder="请输入业绩金额" />
         <picker range="{{units}}" bindchange="bindUnitChange">
           <view class="money-select-box">
-            <view class="money-title">单位:</view><input class="money-right-input" type="text" disabled="{{true}}" name="rateData" value="{{form.unit}}" placeholder="万" />
+            <view class="money-title">单位:</view>
+            <input class="money-right-input" type="text" disabled="{{true}}" name="rateData" value="{{form.unit}}" placeholder="万" />
             <view class="info_more">
               <image class="more" src="/images/right.png" />
             </view>
@@ -75,9 +76,9 @@
     </view>
   </view>
   <view class="bottom">
-    <button class="save-btn" form-type="submit" size="mini">提交</button>
+    <button class="save-btn" form-type="submit" size="mini">{{isFix ? "修改" : "提交"}}</button>
   </view>
-  <view class='modal-mask' wx:if='{{showShareModal}}' bindtap='clickMask'>
+  <view class='modal-mask' wx:if='{{showShareModal}}'>
     <view class='modal-content'>
       <view class='main-content'>
         <view class="main-title">温馨提示</view>

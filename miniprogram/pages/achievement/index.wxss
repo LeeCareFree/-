@@ -80,3 +80,17 @@ input {
     font-weight: bold;
     font-size: 32rpx;
 }
+
+.btnView {
+    padding: 20rpx;
+}
+
+.handleBtn {
+    font-size: 30rpx;
+    padding: 5rpx;
+    margin-left: 20rpx;
+    background-color: #4e87f1;
+    padding: 10rpx;
+    color: white;
+    border-radius: 10rpx;
+}
