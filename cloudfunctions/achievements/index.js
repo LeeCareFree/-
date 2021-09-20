@@ -6,10 +6,12 @@ const export_achievements = require('./export_achievements/index')
 const get_databoard = require('./get_databoard/index')
 const remove_achievement = require('./remove_achievement/index')
 const update_achievement = require('./update_achievement/index')
+const get_ranks = require('./get_ranks/index')
+
 cloud.init()
 
 // 云函数入口函数
-exports.main = async(event, context) => {
+exports.main = async (event, context) => {
     const wxContext = cloud.getWXContext()
     switch (event.type) {
         case 'set_achievement':
@@ -24,6 +26,8 @@ exports.main = async(event, context) => {
             return await remove_achievement.main(event, context)
         case 'update_achievement':
             return await update_achievement.main(event, context)
+        case 'get_ranks':
+            return await get_ranks.main(event, context)
     }
     return {
         event,

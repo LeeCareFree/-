@@ -23,8 +23,7 @@ exports.main = async(event, context) => {
         const _ = db.command
         let achievements = await db.collection('achievements').where({
             date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate))
-        }).get()
-        console.log(achievements)
+        }).orderBy('date', 'asc').get()
             //1,定义excel表格名
         let dataCVS = '业绩数据.xlsx'
             //2，定义存储数据的

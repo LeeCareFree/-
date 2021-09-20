@@ -34,15 +34,15 @@ Page({
         showShareModal: false,
         isFix: false
     },
-    onLoad: function(options) {
+    onLoad: function (options) {
         options.data ? this.setData({
-            form: {...JSON.parse(options.data) },
+            form: { ...JSON.parse(options.data) },
             isFix: true
         }) : {}; //获取参数
         this.getInfo("banks", "get_banks");
         this.getInfo("sorts", "get_sorts");
     },
-    onShow: function() {
+    onShow: function () {
         let localData = app.getLocalUserData();
         this.setData({
             'form.username': localData.userInfo.username,
@@ -59,28 +59,28 @@ Page({
 
         }
     },
-    usernameInput: function(e) {
+    usernameInput: function (e) {
         this.setData({
             'form.username': e.detail.value
         })
     },
-    prodInput: function(e) {
+    prodInput: function (e) {
         this.setData({
             'form.prodData': e.detail.value
         })
     },
-    moneyInput: function(e) {
+    moneyInput: function (e) {
         this.setData({
             'form.moneyData': e.detail.value
         })
     },
-    notesInput: function(e) {
+    notesInput: function (e) {
         this.setData({
             'form.notesData': e.detail.value
         })
     },
     // 获取表单分类数据
-    getInfo: function(name, type, params) {
+    getInfo: function (name, type, params) {
         let that = this
         wx.showLoading({
             title: '加载中',
@@ -89,7 +89,7 @@ Page({
             name: name,
             data: {
                 type: type,
-                params: {...params }
+                params: { ...params }
             }
         }).then((resp) => {
             if (resp.result.success) {
@@ -134,38 +134,44 @@ Page({
                 success: (result) => {
 
                 },
-                fail: () => {},
-                complete: () => {}
+                fail: () => { },
+                complete: () => { }
             });
             // that.showModal()
             wx.hideLoading()
         })
     },
-    bindUnitChange: function(e) {
+    bindUnitChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             'form.unit': this.data.units[e.detail.value]
         })
     },
-    bindDateChange: function(e) {
+    bindDateChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             'form.date': e.detail.value
         })
     },
-    bindBankChange: function(e) {
+    bindBankChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             'form.bankData': this.data.banks[e.detail.value]
         })
     },
-    bindSortChange: function(e) {
+    bindSortChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
-            'form.sortData': this.data.sorts[e.detail.value]
+            'form.sortData': this.data.sorts[e.detail.value],
+            "form.prodData": "",
+            "form.moneyData": "",
+            "form.notesData": "",
+            "form.fundRateData": "",
+            "form.insuranceRateData": "",
+            "form.unit": "万"
         })
     },
-    bindRateChange: function(e) {
+    bindRateChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         if (this.data.form.sortData == "保险") {
             this.setData({
@@ -198,11 +204,6 @@ Page({
             sortData: {
                 required: true,
             },
-            prodData: {
-                required: true,
-                maxlength: 10
-            },
-
             date: {
                 required: true,
             },
@@ -216,6 +217,12 @@ Page({
                 required: true,
                 maxlength: 4,
                 number: true
+            },
+        }) : ""
+        data.sortData.indexOf("行外吸金") < 0 ? rules = Object.assign({}, rules, {
+            prodData: {
+                required: true,
+                maxlength: 10
             },
         }) : ""
         const messages = {
@@ -260,9 +267,9 @@ Page({
                 return false
             }
             wx.showLoading({
-                    title: '加载中',
-                })
-                // 转换时间戳上传
+                title: '加载中',
+            })
+            // 转换时间戳上传
             let exchangeDate = new Date(this.data.form.date)
             let paramsObj = {
                 date: exchangeDate.getTime(),
@@ -275,14 +282,14 @@ Page({
                 notesData: this.data.form.notesData,
                 fundRateData: this.data.form.fundRateData,
                 insuranceRateData: this.data.form.insuranceRateData,
-                unit: this.data.form.unit,
+                unit: this.data.form.sortData != "一体化联动" ? this.data.form.unit : "",
                 mobile: this.data.userInfo.mobile || ""
             }
             wx.cloud.callFunction({
                 name: "achievements",
                 data: {
                     type: this.data.isFix ? "update_achievement" : "set_achievement",
-                    params: this.data.isFix ? { old: this.data.form._id || "", new: paramsObj } : {...paramsObj }
+                    params: this.data.isFix ? { old: this.data.form._id || "", new: paramsObj } : { ...paramsObj }
                 }
             }).then((resp) => {
                 if (resp.result.success) {
@@ -302,8 +309,8 @@ Page({
                     success: (result) => {
 
                     },
-                    fail: () => {},
-                    complete: () => {}
+                    fail: () => { },
+                    complete: () => { }
                 });
             }).catch((e) => {
                 console.log(e)
@@ -315,7 +322,7 @@ Page({
     /**
      * 用户点击分享
      */
-    onShareAppMessage: function(e) {
+    onShareAppMessage: function (e) {
         const promise = new Promise(resolve => {
             // 通过 SelectorQuery 获取 Canvas 节点
             wx.createSelectorQuery()
@@ -344,16 +351,19 @@ Page({
                     Promise.all(imgs.map((src) => loadImg(canvas, src))).then(res => {
                         const data = this.data.form
                         const xPosition = (320 / 2 - 15)
-                        const space = 35
+                        const space = 32
                         ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
                         ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
-                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
-                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * space, 90, 30, 30);
+                        let bankSpace = data.bankData.length > 6 ? 29 : space;
+                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
+                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
                         let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
-                        ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
-                        ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData) + 0.3) / 2) * space, 140, 30, 30)
-                        ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, 190, 30, 30)
-                        ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, 190, 30, 30)
+                        let prodSpace = getByteLen(data.prodData) <= 4 ? 40 : 29
+                        this.data.form.sortData.indexOf("行外吸金") < 0 ? ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
+                        this.data.form.sortData.indexOf("行外吸金") < 0 ? ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
+
+                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, this.data.form.sortData.indexOf("行外吸金") < 0 ? 190 : 140, 30, 30) : ""
+                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, this.data.form.sortData.indexOf("行外吸金") < 0 ? 190 : 140, 30, 30) : ""
 
                         // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
                         // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
@@ -365,7 +375,7 @@ Page({
                         ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
                         ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
                         ctx.fillText(this.data.form.prodData, 160, 160);
-                        ctx.fillText(`${this.data.form.moneyData}${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, 210);
+                        this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData}${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, this.data.form.sortData.indexOf("行外吸金") < 0 ? 210 : 160) : "";
                         // const a = {
                         //     type: "text",
                         //     x: 320 / 2,
@@ -383,7 +393,7 @@ Page({
                         wx.canvasToTempFilePath({
                             fileType: "png",
                             canvas: canvas,
-                            success: function(res) {
+                            success: function (res) {
                                 let completeDate = that.data.form.date.replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$1年$2月$3日")
                                 let finallData = completeDate.substring(completeDate.indexOf('年') + 1, completeDate.length)
                                 resolve({
@@ -392,7 +402,7 @@ Page({
                                     imageUrl: res.tempFilePath
                                 })
                             },
-                            fail: function(res) {
+                            fail: function (res) {
                                 console.log(111)
                                 that.setData({
                                     "form.sortData": "",
@@ -405,7 +415,7 @@ Page({
                                     "form.unit": "万"
                                 })
                             },
-                            complete: function() {
+                            complete: function () {
                                 that.setData({
                                     "form.sortData": "",
                                     "form.sortData": "",
@@ -561,7 +571,7 @@ Page({
             promise
         })
     },
-    cancel: function() {
+    cancel: function () {
         this.setData({
             "form.sortData": "",
             "form.sortData": "",
@@ -574,11 +584,11 @@ Page({
         })
         this.setData({ showShareModal: false })
     },
-    confirm: function() {
+    confirm: function () {
         this.setData({ showShareModal: false })
     },
     //绘画文本
-    drawText: function(rect, ctx) {
+    drawText: function (rect, ctx) {
         const newRect = JSON.parse(JSON.stringify(rect));
         let textWidth = 0; //累计宽度
         let substringIndex = 0; //截取位置

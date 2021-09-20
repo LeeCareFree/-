@@ -6,7 +6,13 @@ var regularFund = null
 Page({
     data: {
         cycleId: 'weeks',
+        cycleId1: 'weeks',
         date: {
+            curDate: "",
+            startDate: "",
+            endDate: ""
+        },
+        date1: {
             curDate: "",
             startDate: "",
             endDate: ""
@@ -15,9 +21,44 @@ Page({
         tempMultiArray: [],
         tempMultiIndex: [],
         multiIndex: [0, 0, 0],
-        showChart: true
+        showChart: true,
+        showTable: true,
+        // 最顶部tab切换 
+        currentTab: 0,
+        sorts: [],
+        sortData: "重点基金",
+        ranklist: [],
+        swiperHeight: "min-height: 100vh;"
     },
-    bindMultiPickerChange: function(e) {
+    bindSortChange: function (e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        this.setData({
+            sortData: this.data.sorts[e.detail.value]
+        })
+        this.getDataboard("get_ranks", { sort: this.data.sortData })
+    },
+    swichNav: function (e) {
+        var that = this;
+        if (this.data.currentTab === e.target.dataset.current) {
+            return false;
+        } else {
+            that.setData({
+                currentTab: e.target.dataset.current,
+            })
+            this.setData({
+                swiperHeight: e.target.dataset.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 100 + 500}vmin/7.5);`
+            })
+        }
+    },
+    swiperChange: function (e) {
+        this.setData({
+            currentTab: e.detail.current,
+        })
+        this.setData({
+            swiperHeight: e.detail.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 100 + 500}vmin/7.5);`
+        })
+    },
+    bindMultiPickerChange: function (e) {
         this.setData({
             multiArray: this.data.tempMultiArray,
             multiIndex: e.detail.value
@@ -25,11 +66,11 @@ Page({
         console.log('picker发送选择改变，携带值为', e.detail.value)
         let multiArray = this.data.tempMultiArray
         let multiIndex = this.data.multiIndex
-        this.getDataboard({ sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], username: multiArray[2][multiIndex[2]] }).then(res => {
+        this.getDataboard("get_databoard", { sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], username: multiArray[2][multiIndex[2]] }).then(res => {
             this.createChart()
         })
     },
-    bindMultiPickerColumnChange: function(e) {
+    bindMultiPickerColumnChange: function (e) {
         console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
         var data = {
             tempMultiArray: this.data.tempMultiArray,
@@ -46,7 +87,7 @@ Page({
         }
         this.setData(data);
     },
-    onCallbackDate: async function(e) {
+    onCallbackDate: async function (e) {
         this.setData({
             tempMultiArray: this.data.multiArray,
             date: e.detail.date
@@ -55,33 +96,39 @@ Page({
             await this.serviceHandle("sorts", "get_sorts")
             await this.serviceHandle("banks", "get_banks")
             await this.serviceHandle("users", "get_users", { bank: '全部' })
-            this.getDataboard({ sort: this.data.tempMultiArray[0][0], bank: "全部", username: "全部" }).then(res => {
+            this.getDataboard("get_databoard", { sort: this.data.tempMultiArray[0][0], bank: "全部", username: "全部" }).then(res => {
                 this.createChart()
             })
         }
         let multiArray = this.data.multiArray
         let multiIndex = this.data.multiIndex
-        this.getDataboard({ sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], username: multiArray[2][multiIndex[2]] }).then(res => {
+        this.getDataboard("get_databoard", { sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], username: multiArray[2][multiIndex[2]] }).then(res => {
             this.createChart()
         })
     },
-    touchHandler: function(e) {
+    onCallbackDate1: async function (e) {
+        this.setData({
+            date1: e.detail.date
+        })
+        this.getDataboard("get_ranks", { sort: this.data.sortData })
+    },
+    touchHandler: function (e) {
         keyFundChart.scrollStart(e);
     },
-    moveHandler: function(e) {
+    moveHandler: function (e) {
         keyFundChart.scroll(e);
     },
-    touchEndHandler: function(e) {
+    touchEndHandler: function (e) {
         keyFundChart.scrollEnd(e);
         keyFundChart.showToolTip(e, {
-            format: function(item, category) {
+            format: function (item, category) {
                 console.log(item)
                 return item.username + ' ' + item.name + ':' + item.data
             }
         });
     },
     // 创建横纵轴数据
-    createSimulationData: function(suorceData) {
+    createSimulationData: function (suorceData) {
         console.log(suorceData)
         let categories = suorceData.map(i => {
             return exchangeTime(i.date)
@@ -101,7 +148,7 @@ Page({
         }
     },
     // 创建图表
-    createChart: function(options) {
+    createChart: function (options) {
         var windowWidth = 320;
         try {
             var res = wx.getSystemInfoSync();
@@ -122,7 +169,7 @@ Page({
                 name: this.data.multiArray[0][this.data.multiIndex[0]],
                 data: simulationData.data,
                 username: simulationData.username,
-                format: function(val, name) {
+                format: function (val, name) {
                     return multiArray[0][multiIndex[0]] == "基金定投" ? val + '笔' : val + '万';
                 }
             }],
@@ -131,7 +178,7 @@ Page({
             },
             yAxis: {
                 title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩数额 (笔)" : '业绩金额 (万)',
-                format: function(val) {
+                format: function (val) {
                     return val;
                 },
                 min: 0
@@ -147,16 +194,17 @@ Page({
         });
     },
     // 获取图表数据
-    getDataboard: function(params) {
-        let exchangeStartDate = new Date(this.data.date.startDate)
-        let exchangeEndDate = new Date(this.data.date.endDate)
+    getDataboard: function (type, params) {
+        let date = type == "get_databoard" ? this.data.date : this.data.date1
+        let exchangeStartDate = new Date(date.startDate)
+        let exchangeEndDate = new Date(date.endDate)
         wx.showLoading({
             title: '',
         })
         return wx.cloud.callFunction({
             name: "achievements",
             data: {
-                type: "get_databoard",
+                type: type,
                 params: {
                     startDate: exchangeStartDate.getTime(),
                     finallDate: exchangeEndDate.getTime(),
@@ -167,14 +215,21 @@ Page({
             console.log(resp)
             if (resp.result.success) {
                 let resData = resp.result.data.data
-                this.setData({
-                    dataBoard: resData,
-                    showChart: true
-                })
+                type == "get_databoard" ?
+                    this.setData({
+                        dataBoard: resData,
+                        showChart: true
+                    }) : this.setData({
+                        showTable: true,
+                        ranklist: resData
+                    })
             } else {
-                this.setData({
-                    showChart: false
-                })
+                type == "get_databoard" ?
+                    this.setData({
+                        showChart: false
+                    }) : this.setData({
+                        showTable: false
+                    })
                 wx.showToast({
                     title: resp.result.message || "",
                     duration: 1000,
@@ -195,7 +250,7 @@ Page({
         })
     },
     // 请求方法
-    serviceHandle: function(name, type, params) {
+    serviceHandle: function (name, type, params) {
         wx.showLoading({
             title: '',
         })
@@ -210,8 +265,10 @@ Page({
             if (resp.result.success) {
                 if (type == "get_sorts") {
                     let tempSorts = resp.result.data.data.filter(i => i.name != "一体化联动")
+                    let tempSorts1 = tempSorts.filter(i => i.name != "行外吸金-活期")
                     this.setData({
-                        'multiArray[0]': tempSorts.map(item => item.name)
+                        'multiArray[0]': tempSorts.map(item => item.name),
+                        sorts: tempSorts1.map(item => item.name)
                     })
                 }
                 if (type == "get_banks") {
@@ -264,12 +321,18 @@ Page({
             cycleId: e.detail.id
         })
     },
+    onClickTabCycle1: function onClickTabCycle(e) {
+        console.log(e);
+        this.setData({
+            cycleId1: e.detail.id
+        })
+    },
     /**
      * 生命周期函数--监听页面加载
      */
 
 
-    onLoad: function(e) {
+    onLoad: function (e) {
 
     },
 
@@ -277,7 +340,7 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
 
-    onReady: function() {
+    onReady: function () {
 
     },
 
@@ -287,7 +350,7 @@ Page({
 
     */
 
-    onShow: function() {
+    onShow: function () {
 
     },
 
@@ -297,7 +360,7 @@ Page({
 
     */
 
-    onHide: function() {
+    onHide: function () {
 
     },
 
@@ -307,7 +370,7 @@ Page({
 
     */
 
-    onUnload: function() {
+    onUnload: function () {
 
     },
 
@@ -317,7 +380,7 @@ Page({
 
     */
 
-    onPullDownRefresh: function() {
+    onPullDownRefresh: function () {
 
     },
 
@@ -327,7 +390,7 @@ Page({
 
     */
 
-    onReachBottom: function() {
+    onReachBottom: function () {
 
     },
 
@@ -337,7 +400,7 @@ Page({
 
     */
 
-    onShareAppMessage: function() {
+    onShareAppMessage: function () {
 
     },
 
