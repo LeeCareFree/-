@@ -30,14 +30,14 @@ Page({
         ranklist: [],
         swiperHeight: "min-height: 100vh;"
     },
-    bindSortChange: function (e) {
+    bindSortChange: function(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             sortData: this.data.sorts[e.detail.value]
         })
         this.getDataboard("get_ranks", { sort: this.data.sortData })
     },
-    swichNav: function (e) {
+    swichNav: function(e) {
         var that = this;
         if (this.data.currentTab === e.target.dataset.current) {
             return false;
@@ -46,19 +46,19 @@ Page({
                 currentTab: e.target.dataset.current,
             })
             this.setData({
-                swiperHeight: e.target.dataset.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 100 + 500}vmin/7.5);`
+                swiperHeight: e.target.dataset.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 80 + 350}vmin/7.5);`
             })
         }
     },
-    swiperChange: function (e) {
+    swiperChange: function(e) {
         this.setData({
             currentTab: e.detail.current,
         })
         this.setData({
-            swiperHeight: e.detail.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 100 + 500}vmin/7.5);`
+            swiperHeight: e.detail.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 80 + 350}vmin/7.5);`
         })
     },
-    bindMultiPickerChange: function (e) {
+    bindMultiPickerChange: function(e) {
         this.setData({
             multiArray: this.data.tempMultiArray,
             multiIndex: e.detail.value
@@ -70,7 +70,7 @@ Page({
             this.createChart()
         })
     },
-    bindMultiPickerColumnChange: function (e) {
+    bindMultiPickerColumnChange: function(e) {
         console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
         var data = {
             tempMultiArray: this.data.tempMultiArray,
@@ -87,7 +87,7 @@ Page({
         }
         this.setData(data);
     },
-    onCallbackDate: async function (e) {
+    onCallbackDate: async function(e) {
         this.setData({
             tempMultiArray: this.data.multiArray,
             date: e.detail.date
@@ -106,29 +106,29 @@ Page({
             this.createChart()
         })
     },
-    onCallbackDate1: async function (e) {
+    onCallbackDate1: async function(e) {
         this.setData({
             date1: e.detail.date
         })
         this.getDataboard("get_ranks", { sort: this.data.sortData })
     },
-    touchHandler: function (e) {
+    touchHandler: function(e) {
         keyFundChart.scrollStart(e);
     },
-    moveHandler: function (e) {
+    moveHandler: function(e) {
         keyFundChart.scroll(e);
     },
-    touchEndHandler: function (e) {
+    touchEndHandler: function(e) {
         keyFundChart.scrollEnd(e);
         keyFundChart.showToolTip(e, {
-            format: function (item, category) {
+            format: function(item, category) {
                 console.log(item)
                 return item.username + ' ' + item.name + ':' + item.data
             }
         });
     },
     // 创建横纵轴数据
-    createSimulationData: function (suorceData) {
+    createSimulationData: function(suorceData) {
         console.log(suorceData)
         let categories = suorceData.map(i => {
             return exchangeTime(i.date)
@@ -148,7 +148,7 @@ Page({
         }
     },
     // 创建图表
-    createChart: function (options) {
+    createChart: function(options) {
         var windowWidth = 320;
         try {
             var res = wx.getSystemInfoSync();
@@ -169,7 +169,7 @@ Page({
                 name: this.data.multiArray[0][this.data.multiIndex[0]],
                 data: simulationData.data,
                 username: simulationData.username,
-                format: function (val, name) {
+                format: function(val, name) {
                     return multiArray[0][multiIndex[0]] == "基金定投" ? val + '笔' : val + '万';
                 }
             }],
@@ -178,7 +178,7 @@ Page({
             },
             yAxis: {
                 title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩数额 (笔)" : '业绩金额 (万)',
-                format: function (val) {
+                format: function(val) {
                     return val;
                 },
                 min: 0
@@ -194,7 +194,7 @@ Page({
         });
     },
     // 获取图表数据
-    getDataboard: function (type, params) {
+    getDataboard: function(type, params) {
         let date = type == "get_databoard" ? this.data.date : this.data.date1
         let exchangeStartDate = new Date(date.startDate)
         let exchangeEndDate = new Date(date.endDate)
@@ -219,7 +219,8 @@ Page({
                     this.setData({
                         dataBoard: resData,
                         showChart: true
-                    }) : this.setData({
+                    }) :
+                    this.setData({
                         showTable: true,
                         ranklist: resData
                     })
@@ -250,7 +251,7 @@ Page({
         })
     },
     // 请求方法
-    serviceHandle: function (name, type, params) {
+    serviceHandle: function(name, type, params) {
         wx.showLoading({
             title: '',
         })
@@ -332,7 +333,7 @@ Page({
      */
 
 
-    onLoad: function (e) {
+    onLoad: function(e) {
 
     },
 
@@ -340,7 +341,7 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
 
-    onReady: function () {
+    onReady: function() {
 
     },
 
@@ -350,7 +351,7 @@ Page({
 
     */
 
-    onShow: function () {
+    onShow: function() {
 
     },
 
@@ -360,7 +361,7 @@ Page({
 
     */
 
-    onHide: function () {
+    onHide: function() {
 
     },
 
@@ -370,7 +371,7 @@ Page({
 
     */
 
-    onUnload: function () {
+    onUnload: function() {
 
     },
 
@@ -380,7 +381,7 @@ Page({
 
     */
 
-    onPullDownRefresh: function () {
+    onPullDownRefresh: function() {
 
     },
 
@@ -390,7 +391,7 @@ Page({
 
     */
 
-    onReachBottom: function () {
+    onReachBottom: function() {
 
     },
 
@@ -400,7 +401,7 @@ Page({
 
     */
 
-    onShareAppMessage: function () {
+    onShareAppMessage: function() {
 
     },
 

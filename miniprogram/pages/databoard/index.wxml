@@ -93,7 +93,9 @@
                                 <image wx:if="{{index == 2}}" class="rank-img" src="../../images/third.png" />
                                 <view class="td">{{item.username}}</view>
                                 <view class="td">{{item.bank}}</view>
-                                <view class="td">{{item.moneyData + "万"}}</view>
+                                <view class="td">
+                                    {{sortData == '基金定投' ? item.moneyData +'笔' : item.moneyData+'万'}}
+                                </view>
                             </view>
                         </block>
                     </view>
