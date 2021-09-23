@@ -22,13 +22,13 @@ exports.main = async(event, context) => {
     try {
         const _ = db.command
         let achievements = await db.collection('achievements').where({
-            date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate))
-        }).orderBy('date', 'asc').get()
+                date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate))
+            }).orderBy('date', 'asc').get()
             //1,定义excel表格名
         let dataCVS = '业绩数据.xlsx'
             //2，定义存储数据的
         let alldata = [];
-        let row = ['日期', '支行', '职位', '姓名', '业绩分类', '产品', '金额', '单位', '频率', '备注']; //表属性
+        let row = ['日期', '支行', '职位', '姓名', '业绩分类', '产品', '业绩', '单位', '频率', '备注']; //表属性
         alldata.push(row);
         for (let i = 0; i < achievements.data.length; i++) {
             let arr = [];

@@ -255,59 +255,63 @@ page {
     flex-direction: row;
     line-height: calc(80vmin/7.5);
     border-bottom: calc(2vmin/7.5) solid #777;
-  }
-    
-  .tab-item {
+}
+
+.tab-item {
     width: 50%;
     text-align: center;
     font-size: calc(32vmin/7.5);
     font-weight: bold;
     color: #777;
-  }
-    
-  .on {
+}
+
+.on {
     color: blue;
     border-bottom: calc(5vmin/7.5) solid blue;
-  }
-.canvasbody{
-    display: flex;
+}
 
+.canvasbody {
+    display: flex;
 }
-  .tips{
-    position:relative;
-    margin-left:calc(20vmin/7.5);
-    padding:6rpx;
-    color:#fff;
-    font-size:calc(26vmin/7.5);
-    width:calc(40vmin/7.5);
-    height: calc(400vmin/7.5);
-    background-color:orange;
-    border-radius:4rpx;
+
+.tips {
+    position: relative;
+    margin-left: calc(20vmin/7.5);
+    padding: 6rpx;
+    color: #fff;
+    font-size: calc(26vmin/7.5);
+    width: calc(35vmin/7.5);
+    height: calc(380vmin/7.5);
+    background-color: orange;
+    border-radius: 4rpx;
 }
-.tips:after{
-    position:absolute;
-    left:calc(-40vmin/7.5);
-    right:calc(20vmin/7.5);
+
+.tips:after {
+    position: absolute;
+    left: calc(-40vmin/7.5);
+    right: calc(20vmin/7.5);
     top: 20%;
-    border-top:calc(20vmin/7.5) solid transparent;
-    content:" ";
-    width:0;
-    height:0;
-    border-right:calc(20vmin/7.5) solid orange;
-    border-bottom:calc(20vmin/7.5) solid transparent;
-    border-left:calc(20vmin/7.5) solid transparent;
+    border-top: calc(20vmin/7.5) solid transparent;
+    content: " ";
+    width: 0;
+    height: 0;
+    border-right: calc(20vmin/7.5) solid orange;
+    border-bottom: calc(20vmin/7.5) solid transparent;
+    border-left: calc(20vmin/7.5) solid transparent;
 }
-.ranklist{
+
+.ranklist {
     display: flex;
     flex-direction: column;
 }
 
-.rank-item{
+.rank-item {
     display: flex;
     align-items: center;
-    padding:calc(20vmin/7.5);
+    padding: calc(20vmin/7.5);
 }
-.rank-img{
+
+.rank-img {
     position: absolute;
     left: 5%;
     width: calc(60vmin/7.5);
@@ -317,28 +321,33 @@ page {
 
 .table {
     border: 0px solid darkgray;
-   }
-   .tr {
+}
+
+.tr {
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
     height: calc(80vmin/7.5);
-   }
-   .td {
-    width:40%;
+}
+
+.td {
+    width: 40%;
     justify-content: center;
     text-align: center;
     font-size: calc(28vmin/7.5);
-   }
-   .bg-w{
+}
+
+.bg-w {
     background: snow;
-   }
-   .bg-g{
+}
+
+.bg-g {
     background: #E6F3F9;
     border-bottom: 1rpx solid gainsboro;
-   }
-   .th {
+}
+
+.th {
     width: 40%;
     justify-content: center;
     background: #3366FF;
@@ -347,4 +356,4 @@ page {
     align-items: center;
     font-size: calc(32vmin/7.5);
     height: calc(80vmin/7.5);
-   }
+}

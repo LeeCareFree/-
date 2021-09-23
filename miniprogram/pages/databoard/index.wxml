@@ -45,9 +45,9 @@
                             </view>
                         </view>
                     </view>
-                    <view class="canvasbody" wx:if="{{showChart}}">
+                    <view class="canvasbody" wx:show="{{showChart}}">
                         <canvas class="canvas" canvas-id="lineCanvas" disable-scroll="true" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
-                        <view class="tips">hi,可以上下左右滑动哦~</view>
+                        <view class="tips" wx:if="{{showChart}}">hi,可以上下左右滑动哦~</view>
                     </view>
                 </swiper-item>
                 <swiper-item>
@@ -94,7 +94,7 @@
                                 <view class="td">{{item.username}}</view>
                                 <view class="td">{{item.bank}}</view>
                                 <view class="td">
-                                    {{sortData == '基金定投' ? item.moneyData +'笔' : item.moneyData+'万'}}
+                                    {{sortData == '基金定投' ? item.moneyData +'笔' : sortData == '贵金属' ? item.moneyData+'g' : item.moneyData+'万'}}
                                 </view>
                             </view>
                         </block>

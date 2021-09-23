@@ -170,14 +170,14 @@ Page({
                 data: simulationData.data,
                 username: simulationData.username,
                 format: function(val, name) {
-                    return multiArray[0][multiIndex[0]] == "基金定投" ? val + '笔' : val + '万';
+                    return multiArray[0][multiIndex[0]] == "基金定投" ? val + '笔' : multiArray[0][multiIndex[0]] == "贵金属" ? val + 'g' : val + '万';
                 }
             }],
             xAxis: {
                 disableGrid: false
             },
             yAxis: {
-                title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩数额 (笔)" : '业绩金额 (万)',
+                title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩 (笔)" : multiArray[0][multiIndex[0]] == "贵金属" ? '业绩 (g)' : '业绩 (万)',
                 format: function(val) {
                     return val;
                 },

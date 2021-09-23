@@ -46,8 +46,8 @@
         <input class="right-input" name="prodData" value="{{form.prodData}}" bindinput="prodInput" placeholder="请输入产品名称" />
       </view>
       <view class="form-item" wx:if="{{form.sortData != '一体化联动'}}">
-        <view class="left">业绩金额</view>
-        <input class="right-input" name="money" value="{{form.moneyData}}" type="number" bindinput="moneyInput" placeholder="请输入业绩金额" />
+        <view class="left">业绩</view>
+        <input class="right-input" name="money" value="{{form.moneyData}}" type="number" bindinput="moneyInput" placeholder="请输入业绩" />
         <picker range="{{units}}" bindchange="bindUnitChange">
           <view class="money-select-box">
             <view class="money-title">单位:</view>

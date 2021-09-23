@@ -38,7 +38,7 @@
         <view class="content">{{item.prodData}}</view>
     </view>
     <view class="list-item">
-        <view class="title">金额：</view>
+        <view class="title">业绩：</view>
         <view class="content">{{item.moneyData}}{{item.unit}}</view>
     </view>
     <view class="list-item" wx:if="{{item.fundRateData || item.insuranceRateData}}">
