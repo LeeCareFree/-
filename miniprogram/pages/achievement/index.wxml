@@ -1,4 +1,10 @@
 <wxs src="./index.wxs" module="fun" />
+<wxs module="m1">
+  function fn(str, arg) {
+    return str.indexOf(arg) <= -1;
+  }
+  module.exports.fn = fn;
+</wxs>
 <view class="top-title">业绩查询</view>
 <view class="date-picker">
     <view class="left">业绩时间</view>
@@ -33,7 +39,7 @@
         <view class="title">分类：</view>
         <view class="content">{{item.sortData}}</view>
     </view>
-    <view class="list-item" wx:if="{{item.sortData.indexOf('行外吸金') < -1}}">
+    <view class="list-item" wx:if="{{m1.fn(item.sortData,'行外吸金')}}">
         <view class="title">产品：</view>
         <view class="content">{{item.prodData}}</view>
     </view>
@@ -50,7 +56,11 @@
         <view class="content">{{item.notesData}}</view>
     </view>
     <view class='btnView' wx:if="{{userInfo.mobile == item.mobile}}">
-        <text class="handleBtn" bindtap="changeHandle" data-type="fix" data-item="{{item}}">修改业绩</text>
-        <text class="handleBtn" bindtap="changeHandle" data-type="remove" data-item="{{item}}">删除业绩</text>
+        <text class="handleBtn" bindtap="changeHandle" data-type="fix" data-item="{{item}}">
+            修改业绩
+        </text>
+        <text class="handleBtn" bindtap="changeHandle" data-type="remove" data-item="{{item}}">
+            删除业绩
+        </text>
     </view>
 </view>
