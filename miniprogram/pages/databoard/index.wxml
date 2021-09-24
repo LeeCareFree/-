@@ -4,103 +4,42 @@
         <view class="index_container">
             <!-- 顶部导航栏 -->
             <view class="swiper-tab">
-                <view class="tab-item {{currentTab==0 ? 'on' : ''}}" data-current="0" bindtap="swichNav">
-                    趋势图
+                <tab-cycle id="tab-cycle-call-statistics" cur_tab_id="{{cycleId}}" bindtabclick="onClickTabCycle" />
+                <view class="flexContainer">
+                    <view class="title">请选择业绩分类-支行-姓名:</view>
+                    <view class="pickerContainer">
+                        <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+                            <view class="picker">
+                                {{multiArray[0][multiIndex[0]]}}—{{multiArray[1][multiIndex[1]]}}—{{multiArray[2][multiIndex[2]]}}
+                            </view>
+                        </picker>
+                    </view>
+                    <view hidden="{{cycleId !='weeks'}}">
+                        <view class="container" wx:if="{{cycleId =='weeks'}}">
+                            <calendar dateType="{{'weeks'}}" bindonCallbackDate="onCallbackDate" />
+                        </view>
+                    </view>
+                    <view hidden="{{cycleId !='month'}}">
+                        <view class="container" wx:if="{{cycleId =='month'}}">
+                            <calendar id="test" dateType="{{'month'}}" bindonCallbackDate="onCallbackDate" />
+                        </view>
+                    </view>
+                    <view hidden="{{cycleId !='quarter'}}">
+                        <view class="container" wx:if="{{cycleId =='quarter'}}">
+                            <calendar dateType="{{'quarter'}}" bindonCallbackDate="onCallbackDate" />
+                        </view>
+                    </view>
+                    <view hidden="{{cycleId !='custom'}}">
+                        <view class="container" wx:if="{{cycleId =='custom'}}">
+                            <calendar dateType="{{'custom'}}" bindonCallbackDate="onCallbackDate" />
+                        </view>
+                    </view>
                 </view>
-                <view class="tab-item {{currentTab==1 ? 'on' : ''}}" data-current="1" bindtap="swichNav">
-                    排行榜
+                <view class="canvasbody" wx:if="{{showChart}}">
+                    <canvas class="canvas" canvas-id="lineCanvas" disable-scroll="true" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
+                    <view class="tips" wx:if="{{showChart}}">hi,可以上下左右滑动哦~</view>
                 </view>
             </view>
-            <!-- 内容主体 -->
-            <swiper class="swiper" current="{{currentTab}}" style="{{swiperHeight}}" duration="200" bindchange="swiperChange">
-                <swiper-item>
-                    <tab-cycle id="tab-cycle-call-statistics" cur_tab_id="{{cycleId}}" bindtabclick="onClickTabCycle" />
-                    <view class="flexContainer">
-                        <view class="title">请选择业绩分类-支行-姓名:</view>
-                        <view class="pickerContainer">
-                            <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
-                                <view class="picker">
-                                    {{multiArray[0][multiIndex[0]]}}—{{multiArray[1][multiIndex[1]]}}—{{multiArray[2][multiIndex[2]]}}
-                                </view>
-                            </picker>
-                        </view>
-                        <view hidden="{{cycleId !='weeks'}}">
-                            <view class="container" wx:if="{{cycleId =='weeks'}}">
-                                <calendar dateType="{{'weeks'}}" bindonCallbackDate="onCallbackDate" />
-                            </view>
-                        </view>
-                        <view hidden="{{cycleId !='month'}}">
-                            <view class="container" wx:if="{{cycleId =='month'}}">
-                                <calendar id="test" dateType="{{'month'}}" bindonCallbackDate="onCallbackDate" />
-                            </view>
-                        </view>
-                        <view hidden="{{cycleId !='quarter'}}">
-                            <view class="container" wx:if="{{cycleId =='quarter'}}">
-                                <calendar dateType="{{'quarter'}}" bindonCallbackDate="onCallbackDate" />
-                            </view>
-                        </view>
-                        <view hidden="{{cycleId !='custom'}}">
-                            <view class="container" wx:if="{{cycleId =='custom'}}">
-                                <calendar dateType="{{'custom'}}" bindonCallbackDate="onCallbackDate" />
-                            </view>
-                        </view>
-                    </view>
-                    <view class="canvasbody" wx:show="{{showChart}}">
-                        <canvas class="canvas" canvas-id="lineCanvas" disable-scroll="true" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
-                        <view class="tips" wx:if="{{showChart}}">hi,可以上下左右滑动哦~</view>
-                    </view>
-                </swiper-item>
-                <swiper-item>
-                    <tab-cycle id="tab-cycle-call-statistics" cur_tab_id="{{cycleId1}}" bindtabclick="onClickTabCycle1" />
-                    <view class="flexContainer">
-                        <view class="title">请选择业绩分类:</view>
-                        <view class="pickerContainer">
-                            <picker bindchange="bindSortChange" range="{{sorts}}">
-                                <view class="picker">{{sortData}}</view>
-                            </picker>
-                        </view>
-                        <view hidden="{{cycleId1 !='weeks'}}">
-                            <view class="container" wx:if="{{cycleId1 =='weeks'}}">
-                                <calendar dateType="{{'weeks'}}" bindonCallbackDate="onCallbackDate1" />
-                            </view>
-                        </view>
-                        <view hidden="{{cycleId1 !='month'}}">
-                            <view class="container" wx:if="{{cycleId1 =='month'}}">
-                                <calendar id="test" dateType="{{'month'}}" bindonCallbackDate="onCallbackDate1" />
-                            </view>
-                        </view>
-                        <view hidden="{{cycleId1 !='quarter'}}">
-                            <view class="container" wx:if="{{cycleId1 =='quarter'}}">
-                                <calendar dateType="{{'quarter'}}" bindonCallbackDate="onCallbackDate1" />
-                            </view>
-                        </view>
-                        <view hidden="{{cycleId1 !='custom'}}">
-                            <view class="container" wx:if="{{cycleId1 =='custom'}}">
-                                <calendar dateType="{{'custom'}}" bindonCallbackDate="onCallbackDate1" />
-                            </view>
-                        </view>
-                    </view>
-                    <view class="table" wx:if="{{showTable}}">
-                        <view class="tr bg-w">
-                            <view class="th">姓名</view>
-                            <view class="th">支行</view>
-                            <view class="th ">业绩</view>
-                        </view>
-                        <block wx:for="{{ranklist}}" wx:key="index">
-                            <view class="tr bg-g">
-                                <image wx:if="{{index == 0}}" class="rank-img" src="../../images/first.png" />
-                                <image wx:if="{{index == 1}}" class="rank-img" src="../../images/second.png" />
-                                <image wx:if="{{index == 2}}" class="rank-img" src="../../images/third.png" />
-                                <view class="td">{{item.username}}</view>
-                                <view class="td">{{item.bank}}</view>
-                                <view class="td">
-                                    {{sortData == '基金定投' ? item.moneyData +'笔' : sortData == '贵金属' ? item.moneyData+'g' : item.moneyData+'万'}}
-                                </view>
-                            </view>
-                        </block>
-                    </view>
-                </swiper-item>
-            </swiper>
         </view>
     </view>
 </view>

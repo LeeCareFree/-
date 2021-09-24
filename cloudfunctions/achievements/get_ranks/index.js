@@ -1,9 +1,9 @@
 const cloud = require('wx-server-sdk')
 
 cloud.init({
-    env: cloud.DYNAMIC_CURRENT_ENV
-})
-/**数组根据数组对象中的某个属性值进行排序的方法 
+        env: cloud.DYNAMIC_CURRENT_ENV
+    })
+    /**数组根据数组对象中的某个属性值进行排序的方法 
      * 使用例子：newArray.sort(sortBy('number',false)) //表示根据number属性降序排列;若第二个参数不传递，默认表示升序排序
      * @param attr 排序的属性 如number属性
      * @param rev true表示升序排列，false降序排序
@@ -16,7 +16,7 @@ const sortBy = (attr, rev) => {
         rev = (rev) ? 1 : -1;
     }
 
-    return function (a, b) {
+    return function(a, b) {
         a = a[attr];
         b = b[attr];
         if (a < b) {
@@ -59,6 +59,9 @@ const structureArrFn = (obj, type) => {
                 if (cur.sortData == "行外吸金-活期") {
                     cur.moneyData = 0
                 }
+                if (cur.sortData == "行外吸金-定期" && type == "笔数排行") {
+                    cur.moneyData = 1
+                }
                 return pre + Number(cur.moneyData)
             }, 0)
             temp.bank = element[0].bankData
@@ -66,22 +69,42 @@ const structureArrFn = (obj, type) => {
             totalArr.push(temp)
         }
     }
+    var map = totalArr.reduce((all, m) => {
+        let list = all.get(m.moneyData);
+        if (!list) {
+            list = [];
+            all.set(m.moneyData, list);
+        }
+        list.push(m);
+        return all;
+    }, new Map());
+    const finalArr = []
+    Array.from(map.entries())
+        // 这里过滤掉 list 只有一个元素的，剩下的就是有重复的
+        // .filter(([moneyData, list]) => list.length > 1)
+        .forEach(([moneyData, list]) => {
+            let tempObj = {}
+            tempObj["sortMoney"] = moneyData
+            tempObj["list"] = list
+            finalArr.push(tempObj)
+        });
     // 排序
-    let tempArr = totalArr.sort(sortBy('moneyData', false))
-    // 截取排序的数组前十个
-    return tempArr.splice(0, 10)
+    let parseArr = JSON.parse(JSON.stringify(finalArr))
+    let tempArr = parseArr.sort(sortBy('sortMoney', false))
+        // 截取排序的数组前十个
+    return JSON.parse(JSON.stringify(tempArr)).splice(0, 10)
 }
 const db = cloud.database()
 
 // 修改数据库信息云函数入口函数
-exports.main = async (event, context) => {
+exports.main = async(event, context) => {
     try {
         const _ = db.command
         let achievements = await db.collection('achievements').where({
             date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
             sortData: event.params.sort,
         }).get()
-        achievements.data = structureArrFn(structureObjFn(achievements.data, "username"))
+        achievements.data = structureArrFn(structureObjFn(achievements.data, "username"), event.params.rankType)
         if (achievements.data.length <= 0) {
             return {
                 success: false,

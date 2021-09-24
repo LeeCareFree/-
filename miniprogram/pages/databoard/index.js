@@ -6,13 +6,7 @@ var regularFund = null
 Page({
     data: {
         cycleId: 'weeks',
-        cycleId1: 'weeks',
         date: {
-            curDate: "",
-            startDate: "",
-            endDate: ""
-        },
-        date1: {
             curDate: "",
             startDate: "",
             endDate: ""
@@ -21,14 +15,10 @@ Page({
         tempMultiArray: [],
         tempMultiIndex: [],
         multiIndex: [0, 0, 0],
-        showChart: true,
-        showTable: true,
-        // 最顶部tab切换 
-        currentTab: 0,
+        showChart: false,
         sorts: [],
         sortData: "重点基金",
         ranklist: [],
-        swiperHeight: "min-height: 100vh;"
     },
     bindSortChange: function(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
@@ -36,27 +26,6 @@ Page({
             sortData: this.data.sorts[e.detail.value]
         })
         this.getDataboard("get_ranks", { sort: this.data.sortData })
-    },
-    swichNav: function(e) {
-        var that = this;
-        if (this.data.currentTab === e.target.dataset.current) {
-            return false;
-        } else {
-            that.setData({
-                currentTab: e.target.dataset.current,
-            })
-            this.setData({
-                swiperHeight: e.target.dataset.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 80 + 350}vmin/7.5);`
-            })
-        }
-    },
-    swiperChange: function(e) {
-        this.setData({
-            currentTab: e.detail.current,
-        })
-        this.setData({
-            swiperHeight: e.detail.current == 0 ? "min-height: 100vh;" : `height: calc(${this.data.ranklist.length * 80 + 350}vmin/7.5);`
-        })
     },
     bindMultiPickerChange: function(e) {
         this.setData({
@@ -105,12 +74,6 @@ Page({
         this.getDataboard("get_databoard", { sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], username: multiArray[2][multiIndex[2]] }).then(res => {
             this.createChart()
         })
-    },
-    onCallbackDate1: async function(e) {
-        this.setData({
-            date1: e.detail.date
-        })
-        this.getDataboard("get_ranks", { sort: this.data.sortData })
     },
     touchHandler: function(e) {
         keyFundChart.scrollStart(e);
@@ -195,7 +158,7 @@ Page({
     },
     // 获取图表数据
     getDataboard: function(type, params) {
-        let date = type == "get_databoard" ? this.data.date : this.data.date1
+        let date = this.data.date
         let exchangeStartDate = new Date(date.startDate)
         let exchangeEndDate = new Date(date.endDate)
         wx.showLoading({
@@ -215,22 +178,14 @@ Page({
             console.log(resp)
             if (resp.result.success) {
                 let resData = resp.result.data.data
-                type == "get_databoard" ?
-                    this.setData({
-                        dataBoard: resData,
-                        showChart: true
-                    }) :
-                    this.setData({
-                        showTable: true,
-                        ranklist: resData
-                    })
+                this.setData({
+                    dataBoard: resData,
+                    showChart: true
+                })
             } else {
-                type == "get_databoard" ?
-                    this.setData({
-                        showChart: false
-                    }) : this.setData({
-                        showTable: false
-                    })
+                this.setData({
+                    showChart: false
+                })
                 wx.showToast({
                     title: resp.result.message || "",
                     duration: 1000,
@@ -320,12 +275,6 @@ Page({
         console.log(e);
         this.setData({
             cycleId: e.detail.id
-        })
-    },
-    onClickTabCycle1: function onClickTabCycle(e) {
-        console.log(e);
-        this.setData({
-            cycleId1: e.detail.id
         })
     },
     /**

@@ -2,6 +2,7 @@
     "pages": [
         "pages/index/index",
         "pages/achievement/index",
+        "pages/rank/index",
         "pages/admin/index",
         "pages/databoard/index",
         "pages/login/index"
@@ -29,6 +30,12 @@
                 "iconPath": "images/achievement.png",
                 "pagePath": "pages/achievement/index",
                 "text": "业绩查询"
+            },
+            {
+                "selectedIconPath": "images/rankActive.png",
+                "iconPath": "images/rank.png",
+                "pagePath": "pages/rank/index",
+                "text": "排行榜"
             },
             {
                 "selectedIconPath": "images/databoardActive.png",
