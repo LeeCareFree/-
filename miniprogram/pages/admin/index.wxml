@@ -1,6 +1,5 @@
 <!-- pages/admin.wxml -->
 <view class="adminContainer" wx:if="{{isShowPage}}">
-    <view class="top-title">管理员操作</view>
     <view class="user_info">
         <view class="form-item">
             <view class="left">支行名称</view>

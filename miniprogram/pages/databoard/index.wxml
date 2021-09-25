@@ -37,7 +37,7 @@
                 </view>
                 <view class="canvasbody" wx:if="{{showChart}}">
                     <canvas class="canvas" canvas-id="lineCanvas" disable-scroll="true" bindtouchstart="touchHandler" bindtouchmove="moveHandler" bindtouchend="touchEndHandler"></canvas>
-                    <view class="tips" wx:if="{{showChart}}">hi,可以上下左右滑动哦~</view>
+                    <!-- <view class="tips" wx:if="{{showChart}}">hi,可以上下左右滑动哦~</view> -->
                 </view>
             </view>
         </view>

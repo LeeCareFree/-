@@ -1,7 +1,4 @@
-.canvas {
-    width: 95%;
-    height: 200px;
-}
+
 
 @media (min-width: 480px) {
     /* 仅在 480px 或更宽的屏幕上生效的样式规则 */
@@ -243,7 +240,11 @@
 .date_tab {
     margin: 34rpx 32rpx 14rpx;
 }
-
+.canvas {
+    width: 95%;
+    height: 200px;
+    margin-left: calc(90vmin/7.5);
+}
 .canvasbody {
     display: flex;
 }
@@ -255,7 +256,7 @@
     color: #fff;
     font-size: calc(26vmin/7.5);
     width: calc(35vmin/7.5);
-    height: calc(380vmin/7.5);
+    height: calc(400vmin/7.5);
     background-color: orange;
     border-radius: 4rpx;
 }

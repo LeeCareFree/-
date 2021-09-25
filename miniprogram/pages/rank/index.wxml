@@ -50,7 +50,7 @@
             <view class="td">{{item.username}}</view>
             <view class="td">{{item.bank}}</view>
             <view class="td">
-                {{(sortData == '基金定投' || rankTypeData == "笔数排行") ? item.moneyData +'笔' : sortData == '贵金属' ? item.moneyData+'g' : item.moneyData+'万'}}
+                {{(sortData == '基金定投' || (sortData == '行外吸金-定期' && rankTypeData == "笔数排行")) ? item.moneyData +'笔' : sortData == '贵金属' ? item.moneyData+'g' : item.moneyData+'万'}}
             </view>
         </view>
     </view>

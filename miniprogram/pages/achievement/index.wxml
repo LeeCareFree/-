@@ -5,7 +5,6 @@
   }
   module.exports.fn = fn;
 </wxs>
-<view class="top-title">业绩查询</view>
 <view class="date-picker">
     <view class="left">业绩时间</view>
     <picker mode="date" bindchange="bindDateChange">
@@ -56,11 +55,7 @@
         <view class="content">{{item.notesData}}</view>
     </view>
     <view class='btnView' wx:if="{{userInfo.mobile == item.mobile}}">
-        <text class="handleBtn" bindtap="changeHandle" data-type="fix" data-item="{{item}}">
-            修改业绩
-        </text>
-        <text class="handleBtn" bindtap="changeHandle" data-type="remove" data-item="{{item}}">
-            删除业绩
-        </text>
+        <text class="handleBtn" bindtap="changeHandle" data-type="fix" data-item="{{item}}">修改业绩</text>
+        <text class="handleBtn" bindtap="changeHandle" data-type="remove" data-item="{{item}}">删除业绩</text>
     </view>
 </view>

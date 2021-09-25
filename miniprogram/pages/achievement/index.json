@@ -3,6 +3,5 @@
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "业绩查看",
     "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": true,
     "onReachBottomDistance": 100
 }

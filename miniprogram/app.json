@@ -12,8 +12,7 @@
         "backgroundTextStyle": "dark",
         "navigationBarBackgroundColor": "#F6F6F6",
         "navigationBarTitleText": "光明精英",
-        "navigationBarTextStyle": "black",
-        "enablePullDownRefresh": true
+        "navigationBarTextStyle": "black"
     },
     "tabBar": {
         "color": "#2F4F4F#000000",

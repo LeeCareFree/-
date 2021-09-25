@@ -1,7 +1,6 @@
 <canvas class="canvas" id='myCanvas' style="width: 320px;height: 256px;background-color:red;" type='2d'></canvas>
 <form bindsubmit="formSubmit">
   <view class="main">
-    <view class="top-title">{{isFix ? "修改业绩信息" : "填写业绩信息"}}</view>
     <view class="form-content">
       <view class="form-item">
         <view class="left">业绩时间</view>

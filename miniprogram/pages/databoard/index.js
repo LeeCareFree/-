@@ -112,7 +112,7 @@ Page({
     },
     // 创建图表
     createChart: function(options) {
-        var windowWidth = 320;
+        var windowWidth = 375;
         try {
             var res = wx.getSystemInfoSync();
             windowWidth = res.windowWidth;

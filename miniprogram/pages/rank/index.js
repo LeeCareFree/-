@@ -44,6 +44,9 @@ Page({
         let date = this.data.date
         let exchangeStartDate = new Date(date.startDate)
         let exchangeEndDate = new Date(date.endDate)
+        this.setData({
+            showTable: false,
+        })
         wx.showLoading({
             title: '',
         })
