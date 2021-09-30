@@ -293,7 +293,7 @@ Page({
                 name: "achievements",
                 data: {
                     type: this.data.isFix ? "update_achievement" : "set_achievement",
-                    params: this.data.isFix ? { old: this.data.form._id || "", new: paramsObj } : {...paramsObj }
+                    params: this.data.isFix ? { old: this.data.form._id || "", new: Object.assign({}, paramsObj, { isFix: true }) } : {...paramsObj }
                 }
             }).then((resp) => {
                 if (resp.result.success) {
