@@ -127,7 +127,7 @@ Page({
             canvasId: 'lineCanvas',
             type: 'line',
             categories: simulationData.categories,
-            animation: false,
+            animation: true,
             series: [{
                 name: this.data.multiArray[0][this.data.multiIndex[0]],
                 data: simulationData.data,
