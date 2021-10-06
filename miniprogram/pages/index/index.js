@@ -163,7 +163,7 @@ Page({
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.data.sorts[e.detail.value] == "贵金属" ?
             this.setData({
-                units: ["g"]
+                units: ["g","件"]
             }) : ""
         this.setData({
             'form.sortData': this.data.sorts[e.detail.value],
