@@ -176,7 +176,7 @@ Component({
                             nextEable = false;
                         }
                         //获取当天在这一周是属于第几天，然后计算这一周的起始天日期和结束的日期
-                        weeksDay = date.getDay() -1;
+                        weeksDay = date.getDay() + 1;
 
                         let starDate = new Date(date.getTime());
                         starDate.setDate(date.getDate() - weeksDay);
