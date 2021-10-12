@@ -18,7 +18,7 @@ exports.main = async(event, context) => {
                 code: 1,
             };
         }
-        if (userInfo.data[0].username === event.params.username && userInfo.data[0].mobile.substring(userInfo.data[0].mobile.length - 4) === event.params.password) {
+        if (userInfo.data[0].username == event.params.username && userInfo.data[0].mobile.toString().substring(userInfo.data[0].mobile.toString().length - 4) == event.params.password) {
             return {
                 message: "登录成功！",
                 success: true,

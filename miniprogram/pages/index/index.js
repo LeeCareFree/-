@@ -44,19 +44,22 @@ Page({
     },
     onShow: function() {
         let localData = app.getLocalUserData();
-        this.setData({
-            'form.username': localData.userInfo.username,
-            'form.bankData': localData.userInfo.bank,
-            'form.position': localData.userInfo.position,
-            'form.date': getTodayTime()
-        })
-        if (localData.userInfo) {
+        if (localData.userInfo != "") {
+            this.setData({
+                'form.username': localData.userInfo.username,
+                'form.bankData': localData.userInfo.bank,
+                'form.position': localData.userInfo.position,
+                'form.date': getTodayTime()
+            })
             this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
                 isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
                     url: '/pages/login/index'
                 })
             });
-
+        } else {
+            wx.redirectTo({
+                url: '/pages/login/index'
+            })
         }
     },
     usernameInput: function(e) {
@@ -163,7 +166,7 @@ Page({
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.data.sorts[e.detail.value] == "贵金属" ?
             this.setData({
-                units: ["g","件"]
+                units: ["g", "件"]
             }) : ""
         this.setData({
             'form.sortData': this.data.sorts[e.detail.value],
@@ -219,7 +222,7 @@ Page({
         data.sortData != "一体化联动" ? rules = Object.assign({}, rules, {
             money: {
                 required: true,
-                maxlength: 4,
+                maxlength: 8,
                 number: true
             },
         }) : ""
@@ -379,7 +382,7 @@ Page({
                         ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
                         ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
                         ctx.fillText(this.data.form.prodData, 160, 160);
-                        this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData}${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, this.data.form.sortData.indexOf("行外吸金") < 0 ? 210 : 160) : "";
+                        this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData} ${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, this.data.form.sortData.indexOf("行外吸金") < 0 ? 210 : 160) : "";
                         // const a = {
                         //     type: "text",
                         //     x: 320 / 2,
