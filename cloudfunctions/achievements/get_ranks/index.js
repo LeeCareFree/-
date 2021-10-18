@@ -100,10 +100,16 @@ const db = cloud.database()
 exports.main = async(event, context) => {
     try {
         const _ = db.command
-        let achievements = await db.collection('achievements').where({
+        let queryObj = {
             date: _.and(_.gte(event.params.startDate), _.lte(event.params.finallDate)),
             sortData: event.params.sort,
-        }).get()
+        }
+        if (event.params.bank != "全部") {
+            queryObj = Object.assign({}, queryObj, {
+                bankData: event.params.bank
+            })
+        }
+        let achievements = await db.collection('achievements').where({...queryObj }).get()
         achievements.data = structureArrFn(structureObjFn(achievements.data, "username"), event.params.rankType)
         if (achievements.data.length <= 0) {
             return {

@@ -61,13 +61,10 @@ Page({
             tempMultiArray: this.data.multiArray,
             date: e.detail.date
         })
-        if (!this.data.multiArray[0] && !this.data.multiArray[1] && !this.data.multiArray[2]) {
+        if (this.data.multiArray.length <= 0) {
             await this.serviceHandle("sorts", "get_sorts")
             await this.serviceHandle("banks", "get_banks")
             await this.serviceHandle("users", "get_users", { bank: '全部' })
-            this.getDataboard("get_databoard", { sort: this.data.tempMultiArray[0][0], bank: "全部", username: "全部" }).then(res => {
-                this.createChart()
-            })
         }
         let multiArray = this.data.multiArray
         let multiIndex = this.data.multiIndex

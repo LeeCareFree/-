@@ -2,14 +2,21 @@
 <tab-cycle id="tab-cycle-call-statistics" cur_tab_id="{{cycleId}}" bindtabclick="onClickTabCycle" />
 <view class="flexContainer">
     <view class="picker-flex">
-        <view class="title">请选择业绩分类:</view>
+        <view class="title">请选择业绩分类-支行:</view>
         <view class="pickerContainer">
+            <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+                <view class="picker">
+                    {{multiArray[0][multiIndex[0]]}}—{{multiArray[1][multiIndex[1]]}}
+                </view>
+            </picker>
+        </view>
+        <!-- <view class="pickerContainer">
             <picker bindchange="bindSortChange" range="{{sorts}}">
                 <view class="picker">{{sortData}}</view>
             </picker>
-        </view>
+        </view> -->
     </view>
-    <view class="picker-flex" wx:if="{{sortData=='行外吸金-定期'}}">
+    <view class="picker-flex" wx:if="{{multiArray[0][multiIndex[0]]=='行外吸金-定期'}}">
         <view class="title">请选择排行方式:</view>
         <view class="pickerContainer">
             <picker bindchange="bindRankTypeChange" range="{{rankTypes}}">

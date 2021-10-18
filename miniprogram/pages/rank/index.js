@@ -11,33 +11,77 @@ Page({
             startDate: "",
             endDate: ""
         },
+        multiArray: [],
+        tempMultiArray: [],
+        tempMultiIndex: [],
+        multiIndex: [0, 0, 0],
         showTable: true,
         sorts: [],
         rankTypes: ["金额排行", "笔数排行"],
         rankTypeData: "金额排行",
-        sortData: "重点基金",
         ranklist: [],
     },
-    bindSortChange: function(e) {
-        console.log('picker发送选择改变，携带值为', e.detail.value)
+    bindMultiPickerChange: function(e) {
         this.setData({
-            sortData: this.data.sorts[e.detail.value]
+            multiArray: this.data.tempMultiArray,
+            multiIndex: e.detail.value
         })
-        this.getDataboard("get_ranks", { sort: this.data.sortData, rankType: this.data.rankTypeData })
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        let multiArray = this.data.tempMultiArray
+        let multiIndex = this.data.multiIndex
+        this.getDataboard("get_ranks", { sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], rankType: this.data.rankTypeData })
+    },
+    bindMultiPickerColumnChange: function(e) {
+        console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+        var data = {
+            tempMultiArray: this.data.tempMultiArray,
+            tempMultiIndex: this.data.tempMultiIndex
+        };
+        data.tempMultiIndex[e.detail.column] = e.detail.value;
+        // switch (e.detail.column) {
+        //     case 0:
+        //         break;
+        //     case 1:
+        //         console.log(e.detail.value)
+        //             // this.serviceHandle("users", "get_users", { bank: data.tempMultiArray[1][e.detail.value] })
+        //         data.tempMultiIndex[2] = 0;
+        //         break;
+        // }
+        this.setData(data);
     },
     bindRankTypeChange: function(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             rankTypeData: this.data.rankTypes[e.detail.value]
         })
-        this.getDataboard("get_ranks", { sort: this.data.sortData, rankType: this.data.rankTypeData })
+        this.getDataboard("get_ranks", { sort: this.data.multiArray[0][multiIndex[0]], rankType: this.data.rankTypeData })
     },
+    // onCallbackDate: async function(e) {
+    //     await this.serviceHandle("sorts", "get_sorts")
+    //     this.setData({
+    //         date: e.detail.date
+    //     })
+    //     this.getDataboard("get_ranks", { sort: this.data.sortData, rankType: this.data.rankTypeData })
+    // },
     onCallbackDate: async function(e) {
-        await this.serviceHandle("sorts", "get_sorts")
         this.setData({
+            tempMultiArray: this.data.multiArray,
             date: e.detail.date
         })
-        this.getDataboard("get_ranks", { sort: this.data.sortData, rankType: this.data.rankTypeData })
+        console.log(this.data.multiArray.length)
+            // if (!this.data.multiArray[0] && !this.data.multiArray[1] && !this.data.multiArray[2]) {
+            //     console.log(2)
+            //     await this.serviceHandle("sorts", "get_sorts")
+            //     await this.serviceHandle("banks", "get_banks")
+            //     this.getDataboard("get_ranks", { sort: this.data.tempMultiArray[0][0], bank: "全部", rankType: this.data.rankTypeData })
+            // }
+        if (this.data.multiArray.length <= 0) {
+            await this.serviceHandle("sorts", "get_sorts")
+            await this.serviceHandle("banks", "get_banks")
+        }
+        let multiArray = this.data.multiArray
+        let multiIndex = this.data.multiIndex
+        this.getDataboard("get_ranks", { sort: multiArray[0][multiIndex[0]], bank: multiArray[1][multiIndex[1]], rankType: this.data.rankTypeData })
     },
     // 获取图表数据
     getDataboard: function(type, params) {
@@ -112,6 +156,15 @@ Page({
                     this.setData({
                         'multiArray[0]': tempSorts2.map(item => item.name),
                         sorts: tempSorts2.map(item => item.name)
+                    })
+                }
+                if (type == "get_banks") {
+                    let arr = resp.result.data.data.map(item => {
+                        return item.name
+                    })
+                    arr.unshift("全部")
+                    this.setData({
+                        'multiArray[1]': arr
                     })
                 }
             }
