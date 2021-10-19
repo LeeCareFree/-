@@ -167,7 +167,9 @@ Page({
         this.data.sorts[e.detail.value] == "贵金属" ?
             this.setData({
                 units: ["g", "件"]
-            }) : ""
+            }) : this.setData({
+                units: ["万", "元"]
+            })
         this.setData({
             'form.sortData': this.data.sorts[e.detail.value],
             "form.prodData": "",
@@ -330,6 +332,18 @@ Page({
      * 用户点击分享
      */
     onShareAppMessage: function(e) {
+        const colors = [
+            { sortName: "重点基金", color: "#9ca8b8" },
+            { sortName: "建信理财", color: "#dfd7d7" },
+            { sortName: "保险", color: "#96a48b" },
+            { sortName: "基金定投", color: "#c1cbd7" },
+            { sortName: "私募", color: "#8696a7" },
+            { sortName: "一体化联动", color: "#bfbfbf" },
+            { sortName: "贵金属", color: "#d8caaf" },
+            { sortName: "行外吸金-定期", color: "#fff" },
+            { sortName: "行外吸金-活期", color: "#fff" },
+            { sortName: "基金", color: "#c1cbd7" }
+        ]
         const promise = new Promise(resolve => {
             // 通过 SelectorQuery 获取 Canvas 节点
             wx.createSelectorQuery()
@@ -349,6 +363,14 @@ Page({
                     canvas.width = width * dpr
                     canvas.height = height * dpr
                     ctx.scale(dpr, dpr)
+                    colors.map(i => {
+                        if (i.sortName === this.data.form.sortData) {
+                            ctx.save()
+                            ctx.fillStyle = i.color; //填充
+                            ctx.fillRect(0, 0, canvas.width, canvas.height); //画出矩形背景
+                            ctx.restore()
+                        }
+                    })
                     let imgs = [
                         "../../images/prize.png",
                         "../../images/salute.png",
@@ -359,8 +381,8 @@ Page({
                         const data = this.data.form
                         const xPosition = (320 / 2 - 15)
                         const space = 32
-                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
-                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * space, 40, 30, 30);
+                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * (this.data.form.sortData.indexOf("行外吸金") < 0 ? space : 27), 40, 30, 30)
+                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * (this.data.form.sortData.indexOf("行外吸金") < 0 ? space : 27), 40, 30, 30)
                         let bankSpace = data.bankData.length > 6 ? 29 : space;
                         ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
                         ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
@@ -376,7 +398,7 @@ Page({
                         // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
                         // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
                         // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
-                        ctx.fillStyle = "#000000";
+                        // ctx.fillStyle = "#000000";
                         ctx.font = '24px Times New Roman';
                         ctx.textAlign = "center";
                         ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
@@ -410,7 +432,6 @@ Page({
                                 })
                             },
                             fail: function(res) {
-                                console.log(111)
                                 that.setData({
                                     "form.sortData": "",
                                     "form.sortData": "",

@@ -52,9 +52,10 @@ Page({
     bindRankTypeChange: function(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
-            rankTypeData: this.data.rankTypes[e.detail.value]
-        })
-        this.getDataboard("get_ranks", { sort: this.data.multiArray[0][multiIndex[0]], rankType: this.data.rankTypeData })
+                rankTypeData: this.data.rankTypes[e.detail.value]
+            })
+            // console.log(this.data.multiArray[0])
+        this.getDataboard("get_ranks", { sort: this.data.multiArray[0][this.data.multiIndex[0]], rankType: this.data.rankTypeData })
     },
     // onCallbackDate: async function(e) {
     //     await this.serviceHandle("sorts", "get_sorts")
