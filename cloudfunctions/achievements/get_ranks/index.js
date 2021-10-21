@@ -109,9 +109,27 @@ exports.main = async(event, context) => {
                 bankData: event.params.bank
             })
         }
-        let achievements = await db.collection('achievements').where({...queryObj }).get()
-        achievements.data = structureArrFn(structureObjFn(achievements.data, "username"), event.params.rankType)
-        if (achievements.data.length <= 0) {
+        let count = await getCount();
+        count = count.total;
+        let achievements = []
+        for (let i = 0; i < count; i += 100) { //自己设置每次获取数据的量
+            achievements = achievements.concat(await getAchievements(i));
+        }
+        async function getCount() { //获取数据的总数，这里记得设置集合的权限
+            let count = await db.collection('achievements').where({
+                ...queryObj
+            }).orderBy('date', 'asc').count()
+            return count;
+        }
+        async function getAchievements(skip) { //分段获取数据
+            let achievements = await db.collection('achievements').where({
+                ...queryObj
+            }).orderBy('date', 'asc').skip(skip).get()
+            return achievements.data;
+        }
+        achievements = structureArrFn(structureObjFn(achievements, "username"), event.params.rankType)
+        console.log(achievements)
+        if (achievements.length <= 0) {
             return {
                 success: false,
                 message: "没有数据啦！",

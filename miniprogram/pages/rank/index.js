@@ -106,9 +106,8 @@ Page({
                 }
             }
         }).then((resp) => {
-            console.log(resp)
             if (resp.result.success) {
-                let resData = resp.result.data.data
+                let resData = resp.result.data
                 this.setData({
                     showTable: true,
                     ranklist: resData

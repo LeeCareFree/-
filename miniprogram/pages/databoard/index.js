@@ -172,9 +172,9 @@ Page({
                 }
             }
         }).then((resp) => {
-            console.log(resp)
             if (resp.result.success) {
-                let resData = resp.result.data.data
+                let resData = resp.result.data
+                console.log(resData)
                 this.setData({
                     dataBoard: resData,
                     showChart: true
