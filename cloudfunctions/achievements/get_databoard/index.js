@@ -33,7 +33,7 @@ const structureArrFn = (obj, type) => {
                     if (cur.sortData == "基金定投") {
                         cur.moneyData = 1
                     }
-                    return pre + Number(cur.moneyData)
+                    return (pre * 100 + cur.moneyData * 100) / 100
                 }, 0)
                 // temp.username = "全部"
             temp.date = element[0].date
