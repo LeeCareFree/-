@@ -62,7 +62,7 @@ const structureArrFn = (obj, type) => {
                 if (cur.sortData == "行外吸金-定期" && type == "笔数排行") {
                     cur.moneyData = 1
                 }
-                return (pre*100+cur.moneyData*100)/100
+                return (pre*10000+cur.moneyData*10000)/10000
             }, 0)
             temp.bank = element[0].bankData
             temp.username = element[0].username

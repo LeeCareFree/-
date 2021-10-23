@@ -32,6 +32,7 @@ Page({
         let tempDate = new Date(e.detail.value)
         this.serviceHandle("achievements", "get_achievement", { date: tempDate.getTime(), pageNum: 1 }, true)
         this.setData({
+            pageNum: 1,
             date: e.detail.value
         })
     },

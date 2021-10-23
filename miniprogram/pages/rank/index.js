@@ -55,7 +55,7 @@ Page({
                 rankTypeData: this.data.rankTypes[e.detail.value]
             })
             // console.log(this.data.multiArray[0])
-        this.getDataboard("get_ranks", { sort: this.data.multiArray[0][this.data.multiIndex[0]], rankType: this.data.rankTypeData })
+        this.getDataboard("get_ranks", { sort: this.data.multiArray[0][this.data.multiIndex[0]],bank: this.data.multiArray[1][this.data.multiIndex[1]], rankType: this.data.rankTypeData })
     },
     // onCallbackDate: async function(e) {
     //     await this.serviceHandle("sorts", "get_sorts")

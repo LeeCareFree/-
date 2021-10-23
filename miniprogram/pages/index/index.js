@@ -34,15 +34,15 @@ Page({
         showShareModal: false,
         isFix: false
     },
-    onLoad: function(options) {
+    onLoad: function (options) {
         options.data ? this.setData({
-            form: {...JSON.parse(options.data) },
+            form: { ...JSON.parse(options.data) },
             isFix: true
         }) : {}; //获取参数
         this.getInfo("banks", "get_banks");
         this.getInfo("sorts", "get_sorts")
     },
-    onShow: function() {
+    onShow: function () {
         let localData = app.getLocalUserData();
         if (localData.userInfo != "") {
             this.setData({
@@ -62,28 +62,28 @@ Page({
             })
         }
     },
-    usernameInput: function(e) {
+    usernameInput: function (e) {
         this.setData({
             'form.username': e.detail.value
         })
     },
-    prodInput: function(e) {
+    prodInput: function (e) {
         this.setData({
             'form.prodData': e.detail.value
         })
     },
-    moneyInput: function(e) {
+    moneyInput: function (e) {
         this.setData({
             'form.moneyData': e.detail.value
         })
     },
-    notesInput: function(e) {
+    notesInput: function (e) {
         this.setData({
             'form.notesData': e.detail.value
         })
     },
     // 获取表单分类数据
-    getInfo: function(name, type, params) {
+    getInfo: function (name, type, params) {
         let that = this
         wx.showLoading({
             title: '加载中',
@@ -92,7 +92,7 @@ Page({
             name: name,
             data: {
                 type: type,
-                params: {...params }
+                params: { ...params }
             }
         }).then((resp) => {
             if (resp.result.success) {
@@ -137,39 +137,55 @@ Page({
                 success: (result) => {
 
                 },
-                fail: () => {},
-                complete: () => {}
+                fail: () => { },
+                complete: () => { }
             });
             // that.showModal()
             wx.hideLoading()
         })
     },
-    bindUnitChange: function(e) {
+    bindUnitChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             'form.unit': this.data.units[e.detail.value]
         })
     },
-    bindDateChange: function(e) {
+    bindDateChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             'form.date': e.detail.value
         })
     },
-    bindBankChange: function(e) {
+    bindBankChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             'form.bankData': this.data.banks[e.detail.value]
         })
     },
-    bindSortChange: function(e) {
+    bindSortChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
-        this.data.sorts[e.detail.value] == "贵金属" ?
-            this.setData({
-                units: ["g", "件"]
-            }) : this.setData({
-                units: ["万", "元"]
-            })
+        switch (this.data.sorts[e.detail.value]) {
+            case "贵金属":
+                this.setData({
+                    units: ["g", "件"]
+                })
+                break;
+            case "信用卡":
+                this.setData({
+                    units: ["张"]
+                })
+                break;
+            case "商户":
+                this.setData({
+                    units: ["户"]
+                })
+                break;
+            default:
+                this.setData({
+                    units: ["万", "元"]
+                })
+                break;
+        }
         this.setData({
             'form.sortData': this.data.sorts[e.detail.value],
             "form.prodData": "",
@@ -180,7 +196,7 @@ Page({
             "form.unit": this.data.units[0]
         })
     },
-    bindRateChange: function(e) {
+    bindRateChange: function (e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         if (this.data.form.sortData == "保险") {
             this.setData({
@@ -276,9 +292,9 @@ Page({
                 return false
             }
             wx.showLoading({
-                    title: '加载中',
-                })
-                // 转换时间戳上传
+                title: '加载中',
+            })
+            // 转换时间戳上传
             let exchangeDate = new Date(this.data.form.date)
             let paramsObj = {
                 date: exchangeDate.getTime(),
@@ -298,7 +314,7 @@ Page({
                 name: "achievements",
                 data: {
                     type: this.data.isFix ? "update_achievement" : "set_achievement",
-                    params: this.data.isFix ? { old: this.data.form._id || "", new: Object.assign({}, paramsObj, { isFix: true }) } : {...paramsObj }
+                    params: this.data.isFix ? { old: this.data.form._id || "", new: Object.assign({}, paramsObj, { isFix: true }) } : { ...paramsObj }
                 }
             }).then((resp) => {
                 if (resp.result.success) {
@@ -318,8 +334,8 @@ Page({
                     success: (result) => {
 
                     },
-                    fail: () => {},
-                    complete: () => {}
+                    fail: () => { },
+                    complete: () => { }
                 });
             }).catch((e) => {
                 console.log(e)
@@ -331,7 +347,7 @@ Page({
     /**
      * 用户点击分享
      */
-    onShareAppMessage: function(e) {
+    onShareAppMessage: function (e) {
         const colors = [
             { sortName: "重点基金", color: "#9ca8b8" },
             { sortName: "建信理财", color: "#dfd7d7" },
@@ -342,7 +358,10 @@ Page({
             { sortName: "贵金属", color: "#d8caaf" },
             { sortName: "行外吸金-定期", color: "#fff" },
             { sortName: "行外吸金-活期", color: "#fff" },
-            { sortName: "基金", color: "#c1cbd7" }
+            { sortName: "基金", color: "#c1cbd7" },
+            { sortName: "分期", color: "#e0e5df" },
+            { sortName: "信用卡", color: "#f0ebe5" },
+            { sortName: "商户", color: "#939391" }
         ]
         const promise = new Promise(resolve => {
             // 通过 SelectorQuery 获取 Canvas 节点
@@ -422,7 +441,7 @@ Page({
                         wx.canvasToTempFilePath({
                             fileType: "png",
                             canvas: canvas,
-                            success: function(res) {
+                            success: function (res) {
                                 let completeDate = that.data.form.date.replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$1年$2月$3日")
                                 let finallData = completeDate.substring(completeDate.indexOf('年') + 1, completeDate.length)
                                 resolve({
@@ -431,7 +450,7 @@ Page({
                                     imageUrl: res.tempFilePath
                                 })
                             },
-                            fail: function(res) {
+                            fail: function (res) {
                                 that.setData({
                                     "form.sortData": "",
                                     "form.sortData": "",
@@ -443,7 +462,7 @@ Page({
                                     "form.unit": "万"
                                 })
                             },
-                            complete: function() {
+                            complete: function () {
                                 that.setData({
                                     "form.sortData": "",
                                     "form.sortData": "",
@@ -599,7 +618,7 @@ Page({
             promise
         })
     },
-    cancel: function() {
+    cancel: function () {
         this.setData({
             "form.sortData": "",
             "form.sortData": "",
@@ -612,11 +631,11 @@ Page({
         })
         this.setData({ showShareModal: false })
     },
-    confirm: function() {
+    confirm: function () {
         this.setData({ showShareModal: false })
     },
     //绘画文本
-    drawText: function(rect, ctx) {
+    drawText: function (rect, ctx) {
         const newRect = JSON.parse(JSON.stringify(rect));
         let textWidth = 0; //累计宽度
         let substringIndex = 0; //截取位置
