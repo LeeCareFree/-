@@ -141,6 +141,9 @@ Page({
                         case "商户":
                             retStr = val + '户'
                             break;
+                        case "薪享通":
+                            retStr = val + '户'
+                            break;
                         default:
                             retStr = val + '万'
                             break;
@@ -152,7 +155,7 @@ Page({
                 disableGrid: false
             },
             yAxis: {
-                title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩 (笔)" : multiArray[0][multiIndex[0]] == "信用卡" ? "业绩 (张)" : multiArray[0][multiIndex[0]] == "商户" ? "业绩 (户)" : '业绩 (万)',
+                title: multiArray[0][multiIndex[0]] == "基金定投" ? "业绩 (笔)" : multiArray[0][multiIndex[0]] == "信用卡" ? "业绩 (张)" : multiArray[0][multiIndex[0]] == "商户" || "薪享通" ? "业绩 (户)" : '业绩 (万)',
                 format: function (val) {
                     return val;
                 },

@@ -40,7 +40,7 @@
           </view>
         </picker>
       </view>
-      <view class="form-item" wx:if="{{form.sortData != '行外吸金-定期' && form.sortData != '行外吸金-活期'}}">
+      <view class="form-item" wx:if="{{form.sortData != '行外吸金-定期' && form.sortData != '行外吸金-活期' && form.sortData != '商户' && form.sortData != '薪享通'}}">
         <view class="left">产品名称</view>
         <input class="right-input" name="prodData" value="{{form.prodData}}" bindinput="prodInput" placeholder="请输入产品名称" />
       </view>

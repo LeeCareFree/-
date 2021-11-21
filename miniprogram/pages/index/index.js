@@ -180,6 +180,11 @@ Page({
                     units: ["户"]
                 })
                 break;
+            case "薪享通":
+                this.setData({
+                    units: ["户"]
+                })
+                break;
             default:
                 this.setData({
                     units: ["万", "元"]
@@ -244,7 +249,7 @@ Page({
                 number: true
             },
         }) : ""
-        data.sortData.indexOf("行外吸金") < 0 ? rules = Object.assign({}, rules, {
+        (data.sortData.indexOf("行外吸金") < 0 || data.sortData.indexOf("商户") < 0 || data.sortData.indexOf("薪享通") < 0) ? rules = Object.assign({}, rules, {
             prodData: {
                 required: true,
                 maxlength: 10
@@ -361,7 +366,8 @@ Page({
             { sortName: "基金", color: "#c1cbd7" },
             { sortName: "分期", color: "#e0e5df" },
             { sortName: "信用卡", color: "#f0ebe5" },
-            { sortName: "商户", color: "#939391" }
+            { sortName: "商户", color: "#939391" },
+            { sortName: "薪享通", color: "#ececea" }
         ]
         const promise = new Promise(resolve => {
             // 通过 SelectorQuery 获取 Canvas 节点
@@ -407,11 +413,12 @@ Page({
                         ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
                         let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
                         let prodSpace = getByteLen(data.prodData) <= 4 ? 40 : 29
-                        this.data.form.sortData.indexOf("行外吸金") < 0 ? ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
-                        this.data.form.sortData.indexOf("行外吸金") < 0 ? ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
+                        let noProdName = this.data.form.sortData.indexOf("行外吸金") < 0 && this.data.form.sortData.indexOf("商户") < 0 && this.data.form.sortData.indexOf("薪享通") < 0
+                        noProdName ? ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
+                        noProdName ? ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
 
-                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, this.data.form.sortData.indexOf("行外吸金") < 0 ? 190 : 140, 30, 30) : ""
-                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, this.data.form.sortData.indexOf("行外吸金") < 0 ? 190 : 140, 30, 30) : ""
+                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, noProdName ? 190 : 140, 30, 30) : ""
+                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, noProdName ? 190 : 140, 30, 30) : ""
 
                         // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
                         // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
@@ -423,7 +430,7 @@ Page({
                         ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
                         ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
                         ctx.fillText(this.data.form.prodData, 160, 160);
-                        this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData} ${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, this.data.form.sortData.indexOf("行外吸金") < 0 ? 210 : 160) : "";
+                        this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData} ${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, noProdName ? 210 : 160) : "";
                         // const a = {
                         //     type: "text",
                         //     x: 320 / 2,

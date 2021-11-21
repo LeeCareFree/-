@@ -40,7 +40,7 @@
         <view class="title">分类：</view>
         <view class="content">{{item.sortData}}</view>
     </view>
-    <view class="list-item" wx:if="{{m1.fn(item.sortData,'行外吸金')}}">
+    <view class="list-item" wx:if="{{m1.fn(item.sortData,'行外吸金') && m1.fn(item.sortData,'薪享通') && m1.fn(item.sortData,'商户')}}">
         <view class="title">产品：</view>
         <view class="content">{{item.prodData}}</view>
     </view>
