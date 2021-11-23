@@ -57,7 +57,7 @@
             <view class="td">{{item.username}}</view>
             <view class="td">{{item.bank}}</view>
             <view class="td">
-                {{(multiArray[0][multiIndex[0]]== '基金定投' || (multiArray[0][multiIndex[0]]== '行外吸金-定期' && rankTypeData == "笔数排行")) ? item.moneyData +'笔' : multiArray[0][multiIndex[0]]== '贵金属' ? item.moneyData+'g' : multiArray[0][multiIndex[0]]== '信用卡' ? item.moneyData+'张' : multiArray[0][multiIndex[0]]== '商户' || '薪享通' ? item.moneyData+'户' : item.moneyData+'万'}}
+                {{(multiArray[0][multiIndex[0]]== '基金定投' || (multiArray[0][multiIndex[0]]== '行外吸金-定期' && rankTypeData == "笔数排行")) ? item.moneyData +'笔' : multiArray[0][multiIndex[0]]== '贵金属' ? item.moneyData+'g' : multiArray[0][multiIndex[0]]== '信用卡' ? item.moneyData+'张' : (multiArray[0][multiIndex[0]] == '商户' || multiArray[0][multiIndex[0]] == '薪享通') ? item.moneyData+'户' : item.moneyData+'万'}}
             </view>
         </view>
     </view>

@@ -242,19 +242,23 @@ Page({
                 maxlength: 30
             }
         }
-        data.sortData != "一体化联动" ? rules = Object.assign({}, rules, {
-            money: {
-                required: true,
-                maxlength: 8,
-                number: true
-            },
-        }) : ""
-        (data.sortData.indexOf("行外吸金") < 0 || data.sortData.indexOf("商户") < 0 || data.sortData.indexOf("薪享通") < 0) ? rules = Object.assign({}, rules, {
-            prodData: {
-                required: true,
-                maxlength: 10
-            },
-        }) : ""
+        if (data.sortData != "一体化联动") {
+            rules = Object.assign({}, rules, {
+                money: {
+                    required: true,
+                    maxlength: 8,
+                    number: true
+                },
+            })
+        }
+        if (data.sortData.indexOf("行外吸金") < 0 && data.sortData.indexOf("商户") < 0 && data.sortData.indexOf("薪享通") < 0) {
+            rules = Object.assign({}, rules, {
+                prodData: {
+                    required: true,
+                    maxlength: 10
+                },
+            })
+        }
         const messages = {
             username: {
                 required: '请填写姓名！',
