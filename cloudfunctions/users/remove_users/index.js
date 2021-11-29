@@ -9,7 +9,7 @@ const db = cloud.database()
 exports.main = async(event, context) => {
     try {
         await db.collection('users').where({
-            mobile: event.params
+            mobile: Number(event.params)
         }).remove()
         return {
             success: true,

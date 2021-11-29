@@ -10,7 +10,7 @@ exports.main = async(event, context) => {
     try {
         console.log(event.params)
         let userInfo = await db.collection('users').where({
-            mobile: event.params.mobile
+            mobile: Number(event.params.mobile)
         }).get()
         if (userInfo.data.length <= 0) {
             return {

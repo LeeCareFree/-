@@ -9,7 +9,7 @@ const db = cloud.database()
 exports.main = async(event, context) => {
     try {
         let users = await db.collection('users').where({
-            mobile: event.params.mobile
+            mobile: Number(event.params.mobile)
         }).get()
         if (users.data.length > 0) {
             throw "新增用户已存在！"

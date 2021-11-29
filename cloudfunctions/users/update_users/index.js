@@ -9,7 +9,7 @@ const db = cloud.database()
 exports.main = async(event, context) => {
     try {
         await db.collection('users').where({
-            mobile: event.params.old
+            mobile: Number(event.params.old)
         }).update({
             data: {...event.params.new }
         })
