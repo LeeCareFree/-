@@ -128,6 +128,7 @@ Page({
             }
             wx.hideLoading()
         }).catch((e) => {
+            wx.hideLoading()
             wx.showToast({
                 title: '"获取数据出错！"',
                 icon: 'none',
@@ -141,7 +142,6 @@ Page({
                 complete: () => { }
             });
             // that.showModal()
-            wx.hideLoading()
         })
     },
     bindUnitChange: function (e) {
@@ -347,9 +347,9 @@ Page({
                     complete: () => { }
                 });
             }).catch((e) => {
+                wx.hideLoading()
                 console.log(e)
                 this.showModal('获取数据出错！')
-                wx.hideLoading()
             })
         }
     },

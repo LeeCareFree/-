@@ -123,11 +123,11 @@ Page({
                 wx.hideLoading()
             }).catch((e) => {
                 console.log(e)
+                wx.hideLoading()
                 wx.showModal({
                     title: '密码错误',
                     content: '密码错误' //session中用户名和密码不为空触发
                 });
-                wx.hideLoading()
             })
         }
     }

@@ -73,11 +73,11 @@ Page({
                 params: params || {}
             }
         }).then((resp) => {
+            wx.hideLoading()
             this.showToast(resp.result.message)
-            wx.hideLoading()
         }).catch((e) => {
-            this.showToast('数据出错！');
             wx.hideLoading()
+            this.showToast('数据出错！');
         })
     },
     // 提示框函数
@@ -119,8 +119,8 @@ Page({
             }
             wx.hideLoading()
         }).catch((e) => {
-            this.showModal("获取数据出错！")
             wx.hideLoading()
+            this.showModal("获取数据出错！")
         })
     },
     showToast(msg) {

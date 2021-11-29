@@ -211,13 +211,13 @@ Page({
             wx.hideLoading()
         }).catch((e) => {
             console.log(e)
+            wx.hideLoading()
             wx.showToast({
                 title: "获取数据出错！" || "",
                 duration: 1000,
                 icon: 'none',
                 mask: true
             })
-            wx.hideLoading()
         })
     },
     // 请求方法
@@ -266,13 +266,13 @@ Page({
             }
             wx.hideLoading()
         }).catch((e) => {
+            wx.hideLoading()
             wx.showToast({
                 title: "获取数据出错！" || "",
                 duration: 1000,
                 icon: 'none',
                 mask: true
             })
-            wx.hideLoading()
         })
     },
     // 提示框函数

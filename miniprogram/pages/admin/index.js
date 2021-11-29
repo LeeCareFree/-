@@ -109,15 +109,15 @@ Page({
                         })
                     },
                 })
-                this.showToast(resp.result.message)
                 wx.hideLoading()
+                this.showToast(resp.result.message)
             }).catch((e) => {
+                wx.hideLoading()
                 wx.showModal({
                     title: "温馨提示",
                     content: '获取数据出错！',
                     showCancel: false,
                 });
-                wx.hideLoading()
             })
         }
     },
@@ -467,8 +467,8 @@ Page({
                         this.setData({
                             updateUserInfo: resp.result.data.data[0]
                         }) : ''
-                    this.showToast(resp.result.message)
                     wx.hideLoading()
+                    this.showToast(resp.result.message)
                     return
                 } else {
                     this.setData({
@@ -484,8 +484,8 @@ Page({
             }
             wx.hideLoading()
         }).catch((e) => {
-            this.showToast('获取数据出错！');
             wx.hideLoading()
+            this.showToast('获取数据出错！');
         })
     },
     setBankVal: function(e) {
