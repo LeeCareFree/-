@@ -52,6 +52,11 @@ Page({
                 'form.date': getTodayTime()
             })
             this.getInfo("users", "search_user", { mobile: localData.userInfo.mobile }).then(r => {
+                if (!r) {
+                    wx.redirectTo({
+                        url: '/pages/login/index'
+                    })
+                }
                 isObjEqual(this.data.userInfo, localData.userInfo) ? "" : wx.redirectTo({
                     url: '/pages/login/index'
                 })

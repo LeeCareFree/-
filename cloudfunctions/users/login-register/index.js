@@ -12,13 +12,14 @@ exports.main = async(event, context) => {
         let userInfo = await db.collection('users').where({
             username: event.params.username
         }).get()
+        console.log(userInfo.data[0].mobile.toString().substring(userInfo.data[0].mobile.toString().length - 4))
         if (userInfo.data.length <= 0) {
             return {
                 message: '无权限，请找管理员添加权限！',
                 code: 1,
             };
         }
-        if (userInfo.data[0].username == event.params.username && userInfo.data[0].mobile.toString().substring(userInfo.data[0].mobile.toString().length - 4) == event.params.password) {
+        if (userInfo.data[0].username == event.params.username && userInfo.data[0].mobile.toString().substring(userInfo.data[0].mobile.toString().length - 4) == Number(event.params.password)) {
             return {
                 message: "登录成功！",
                 success: true,

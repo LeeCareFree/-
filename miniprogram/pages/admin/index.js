@@ -231,15 +231,16 @@ Page({
     },
     mobileInput: function(e) {
         let type = e.currentTarget.dataset.type
+        let mobile = Number(e.detail.value)
         switch (type) {
             case "update":
                 this.setData({
-                    "updateUserInfo.mobile": e.detail.value
+                    "updateUserInfo.mobile": mobile
                 })
                 break;
             case "add":
                 this.setData({
-                    "addUserInfo.mobile": e.detail.value
+                    "addUserInfo.mobile": mobile
                 })
                 break;
             default:
