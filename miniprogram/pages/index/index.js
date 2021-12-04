@@ -256,7 +256,7 @@ Page({
                 },
             })
         }
-        if (data.sortData.indexOf("行外吸金") < 0 && data.sortData.indexOf("商户") < 0 && data.sortData.indexOf("薪享通") < 0) {
+        if (data.sortData.indexOf("行外吸金") < 0 && data.sortData.indexOf("商户") < 0 && data.sortData.indexOf("薪享通") < 0 && data.sortData.indexOf("养老理财") < 0) {
             rules = Object.assign({}, rules, {
                 prodData: {
                     required: true,
@@ -376,7 +376,8 @@ Page({
             { sortName: "分期", color: "#e0e5df" },
             { sortName: "信用卡", color: "#f0ebe5" },
             { sortName: "商户", color: "#939391" },
-            { sortName: "薪享通", color: "#ececea" }
+            { sortName: "薪享通", color: "#ececea" },
+            { sortName: "养老理财", color: "#b5c4b1" },
         ]
         const promise = new Promise(resolve => {
             // 通过 SelectorQuery 获取 Canvas 节点
@@ -422,7 +423,7 @@ Page({
                         ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
                         let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
                         let prodSpace = getByteLen(data.prodData) <= 4 ? 40 : 29
-                        let noProdName = this.data.form.sortData.indexOf("行外吸金") < 0 && this.data.form.sortData.indexOf("商户") < 0 && this.data.form.sortData.indexOf("薪享通") < 0
+                        let noProdName = this.data.form.sortData.indexOf("行外吸金") < 0 && this.data.form.sortData.indexOf("商户") < 0 && this.data.form.sortData.indexOf("薪享通") < 0 && this.data.form.sortData.indexOf("养老理财") < 0
                         noProdName ? ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
                         noProdName ? ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
 
