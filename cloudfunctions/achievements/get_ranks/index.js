@@ -56,8 +56,8 @@ const structureArrFn = (obj, type) => {
                 if (cur.sortData == "基金定投") {
                     cur.moneyData = 1
                 }
-                if (cur.sortData == "行外吸金-活期") {
-                    cur.moneyData = 0
+                if (cur.sortData == "行外吸金-活期" && type == "笔数排行") {
+                    cur.moneyData = 1
                 }
                 if (cur.sortData == "行外吸金-定期" && type == "笔数排行") {
                     cur.moneyData = 1

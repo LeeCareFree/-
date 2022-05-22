@@ -236,11 +236,10 @@ Page({
             if (resp.result.success) {
                 if (type == "get_sorts") {
                     let tempSorts = resp.result.data.data.filter(i => i.name != "一体化联动")
-                    let tempSorts1 = tempSorts.filter(i => i.name != "行外吸金-活期")
-                    let tempSorts2 = tempSorts1.filter(i => i.name != "贵金属")
+                    let tempSorts1 = tempSorts.filter(i => i.name != "贵金属")
                     this.setData({
-                        'multiArray[0]': tempSorts2.map(item => item.name),
-                        sorts: tempSorts2.map(item => item.name)
+                        'multiArray[0]': tempSorts1.map(item => item.name),
+                        sorts: tempSorts1.map(item => item.name)
                     })
                 }
                 if (type == "get_banks") {
