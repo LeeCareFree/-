@@ -81,11 +81,13 @@
     <view class='modal-content'>
       <view class='main-content'>
         <view class="main-title">温馨提示</view>
-        <view class="content-detail">提交成功，是否转发！</view>
+        <view class="content-detail">提交成功，继续操作！</view>
+        <image class="result-image" src="{{resultImage}}"></image>
       </view>
       <view class='modal-footer'>
         <button class='cancel-btn' bindtap='cancel'>取消</button>
         <button class='confirm-btn' bindtap='confirm' open-type="share">转发</button>
+        <button class='confirm-btn' bindtap='save'>保存</button>
       </view>
     </view>
   </view>

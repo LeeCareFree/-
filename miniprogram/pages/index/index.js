@@ -32,7 +32,8 @@ Page({
         insuranceRate: ["1年", "2年", "3年", "4年", "5年", "6年", "7年", "8年", "9年", "10年"],
         units: ["万", "元"],
         showShareModal: false,
-        isFix: false
+        isFix: false,
+        resultImage: ''
     },
     onLoad: function (options) {
         options.data ? this.setData({
@@ -293,7 +294,7 @@ Page({
         }
         this.WxValidate = new WxValidate(rules, messages)
     },
-    formSubmit(e) {
+    async formSubmit(e) {
         this.initValidate(e.detail.value) //验证规则函数
         console.log('form发生了submit事件，携带的数据为：', e)
         const params = e.detail.value
@@ -330,13 +331,16 @@ Page({
                     type: this.data.isFix ? "update_achievement" : "set_achievement",
                     params: this.data.isFix ? { old: this.data.form._id || "", new: Object.assign({}, paramsObj, { isFix: true }) } : { ...paramsObj }
                 }
-            }).then((resp) => {
+            }).then(async (resp) => {
                 if (resp.result.success) {
+                    let resultImage = await this.getResultImage();
                     wx.hideLoading()
                     this.setData({
+                        resultImage: resultImage,
                         isFix: false,
                         showShareModal: true,
                     })
+                    debugger
                 }
                 wx.hideLoading()
                 wx.showToast({
@@ -358,10 +362,7 @@ Page({
             })
         }
     },
-    /**
-     * 用户点击分享
-     */
-    onShareAppMessage: function (e) {
+    getResultImage(){
         const colors = [
             { sortName: "重点基金", color: "#9ca8b8" },
             { sortName: "建信理财", color: "#dfd7d7" },
@@ -378,258 +379,134 @@ Page({
             { sortName: "商户", color: "#939391" },
             { sortName: "薪享通", color: "#ececea" },
             { sortName: "养老理财", color: "#b5c4b1" },
-        ]
-        const promise = new Promise(resolve => {
-            // 通过 SelectorQuery 获取 Canvas 节点
-            wx.createSelectorQuery()
-                .select('#myCanvas')
-                .fields({
-                    node: true,
-                    size: true,
+        ];
+        // 通过 SelectorQuery 获取 Canvas 节点
+        return new Promise(resolve => wx.createSelectorQuery()
+            .select('#myCanvas')
+            .fields({
+                node: true,
+                size: true,
+            })
+            .exec((res) => {
+                const width = res[0].width
+                const height = res[0].height
+                const canvas = res[0].node
+                const ctx = canvas.getContext('2d')
+                const dpr = wx.getSystemInfoSync().pixelRatio
+                canvas.width = width * dpr
+                canvas.height = height * dpr
+                ctx.scale(dpr, dpr)
+                colors.map(i => {
+                    if (i.sortName === this.data.form.sortData) {
+                        ctx.save()
+                        ctx.fillStyle = i.color; //填充
+                        ctx.fillRect(0, 0, canvas.width, canvas.height); //画出矩形背景
+                        ctx.restore()
+                    }
                 })
-                .exec((res) => {
-                    const width = res[0].width
-                    const height = res[0].height
-
-                    const canvas = res[0].node
-                    const ctx = canvas.getContext('2d')
-
-                    const dpr = wx.getSystemInfoSync().pixelRatio
-                    canvas.width = width * dpr
-                    canvas.height = height * dpr
-                    ctx.scale(dpr, dpr)
-                    colors.map(i => {
-                        if (i.sortName === this.data.form.sortData) {
-                            ctx.save()
-                            ctx.fillStyle = i.color; //填充
-                            ctx.fillRect(0, 0, canvas.width, canvas.height); //画出矩形背景
-                            ctx.restore()
+                let imgs = [
+                    "../../images/prize.png",
+                    "../../images/salute.png",
+                    "../../images/medal.png",
+                    "../../images/fire.png",
+                ]
+                Promise.all(imgs.map((src) => loadImg(canvas, src))).then(res => {
+                    const data = this.data.form
+                    const xPosition = (320 / 2 - 15)
+                    const space = 32
+                    ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * (this.data.form.sortData.indexOf("行外吸金") < 0 ? space : 27), 40, 30, 30)
+                    ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * (this.data.form.sortData.indexOf("行外吸金") < 0 ? space : 27), 40, 30, 30)
+                    let bankSpace = data.bankData.length > 6 ? 29 : space;
+                    ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
+                    ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
+                    let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
+                    let prodSpace = getByteLen(data.prodData) <= 4 ? 40 : 29
+                    let noProdName = this.data.form.sortData.indexOf("行外吸金") < 0 && this.data.form.sortData.indexOf("商户") < 0 && this.data.form.sortData.indexOf("薪享通") < 0 && this.data.form.sortData.indexOf("养老理财") < 0
+                    noProdName ? ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
+                    noProdName ? ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
+                    this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, noProdName ? 190 : 140, 30, 30) : ""
+                    this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, noProdName ? 190 : 140, 30, 30) : ""
+                    // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
+                    // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
+                    // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
+                    // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
+                    // ctx.fillStyle = "#000000";
+                    ctx.font = '24px Times New Roman';
+                    ctx.textAlign = "center";
+                    ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
+                    ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
+                    ctx.fillText(this.data.form.prodData, 160, 160);
+                    this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData} ${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, noProdName ? 210 : 160) : "";
+                    const that = this;
+                    wx.canvasToTempFilePath({
+                        fileType: "png",
+                        canvas: canvas,
+                        success: function (res) {
+                            resolve(res.tempFilePath)
+                        },
+                        fail: function (res) {
+                            that.setData({
+                                "form.sortData": "",
+                                "form.sortData": "",
+                                "form.prodData": "",
+                                "form.moneyData": "",
+                                "form.notesData": "",
+                                "form.fundRateData": "",
+                                "form.insuranceRateData": "",
+                                "form.unit": "万"
+                            })
+                        },
+                        complete: function () {
+                            that.setData({
+                                "form.sortData": "",
+                                "form.sortData": "",
+                                "form.prodData": "",
+                                "form.moneyData": "",
+                                "form.notesData": "",
+                                "form.fundRateData": "",
+                                "form.insuranceRateData": "",
+                                "form.unit": "万"
+                            })
+                            console.log("complete");
                         }
-                    })
-                    let imgs = [
-                        "../../images/prize.png",
-                        "../../images/salute.png",
-                        "../../images/medal.png",
-                        "../../images/fire.png",
-                    ]
-                    Promise.all(imgs.map((src) => loadImg(canvas, src))).then(res => {
-                        const data = this.data.form
-                        const xPosition = (320 / 2 - 15)
-                        const space = 32
-                        ctx.drawImage(res[0], xPosition - ((data.sortData.length + 2) / 2) * (this.data.form.sortData.indexOf("行外吸金") < 0 ? space : 27), 40, 30, 30)
-                        ctx.drawImage(res[0], xPosition + ((data.sortData.length + 2) / 2) * (this.data.form.sortData.indexOf("行外吸金") < 0 ? space : 27), 40, 30, 30)
-                        let bankSpace = data.bankData.length > 6 ? 29 : space;
-                        ctx.drawImage(res[1], xPosition - ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
-                        ctx.drawImage(res[1], xPosition + ((data.bankData.length + data.username.length) / 2) * bankSpace, 90, 30, 30);
-                        let lengths = getByteLen(data.moneyData + data.unit + data.insuranceRateData + data.fundRateData)
-                        let prodSpace = getByteLen(data.prodData) <= 4 ? 40 : 29
-                        let noProdName = this.data.form.sortData.indexOf("行外吸金") < 0 && this.data.form.sortData.indexOf("商户") < 0 && this.data.form.sortData.indexOf("薪享通") < 0 && this.data.form.sortData.indexOf("养老理财") < 0
-                        noProdName ? ctx.drawImage(res[2], xPosition - ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
-                        noProdName ? ctx.drawImage(res[2], xPosition + ((getByteLen(data.prodData)) / 2) * prodSpace, 140, 30, 30) : ""
-
-                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition - ((lengths + 0.5) / 2) * space, noProdName ? 190 : 140, 30, 30) : ""
-                        this.data.form.sortData != "一体化联动" ? ctx.drawImage(res[2], xPosition + ((lengths + 0.5) / 2) * space, noProdName ? 190 : 140, 30, 30) : ""
-
-                        // ctx.drawImage(res[3], xPosition + 60, 170, 30, 30);
-                        // ctx.drawImage(res[3], xPosition + 60, 210, 30, 30);
-                        // ctx.drawImage(res[3], xPosition - 60, 170, 30, 30);
-                        // ctx.drawImage(res[3], xPosition - 60, 210, 30, 30);
-                        // ctx.fillStyle = "#000000";
-                        ctx.font = '24px Times New Roman';
-                        ctx.textAlign = "center";
-                        ctx.fillText(`${this.data.form.sortData}喜报`, 160, 60);
-                        ctx.fillText(`${this.data.form.bankData} ${this.data.form.username}`, 160, 110);
-                        ctx.fillText(this.data.form.prodData, 160, 160);
-                        this.data.form.sortData != "一体化联动" ? ctx.fillText(`${this.data.form.moneyData} ${this.data.form.unit}${this.data.form.insuranceRateData || this.data.form.fundRateData}`, 160, noProdName ? 210 : 160) : "";
-                        // const a = {
-                        //     type: "text",
-                        //     x: 320 / 2,
-                        //     y: 120,
-                        //     width: lengths * 20,
-                        //     lineHeight: "22px",
-                        //     fontSize: "22px",
-                        //     fontColor: "#000000",
-                        //     text: `${data.sortData !== "一体化联动" ? data.prodData + data.moneyData + data.unit + data.insuranceRateData + data.fundRateData : data.prodData}`
-                        // }
-                        // this.drawText(a, ctx)
-                        // ctx.fillText(`冲刺全年`, 160, 190);
-                        // ctx.fillText(`刻不容缓`, 160, 230);
-                        const that = this;
-                        wx.canvasToTempFilePath({
-                            fileType: "png",
-                            canvas: canvas,
-                            success: function (res) {
-                                let completeDate = that.data.form.date.replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$1年$2月$3日")
-                                let finallData = completeDate.substring(completeDate.indexOf('年') + 1, completeDate.length)
-                                resolve({
-                                    title: `${that.data.form.username}${finallData}业绩分享`,
-                                    path: "/pages/index/index",
-                                    imageUrl: res.tempFilePath
-                                })
-                            },
-                            fail: function (res) {
-                                that.setData({
-                                    "form.sortData": "",
-                                    "form.sortData": "",
-                                    "form.prodData": "",
-                                    "form.moneyData": "",
-                                    "form.notesData": "",
-                                    "form.fundRateData": "",
-                                    "form.insuranceRateData": "",
-                                    "form.unit": "万"
-                                })
-                            },
-                            complete: function () {
-                                that.setData({
-                                    "form.sortData": "",
-                                    "form.sortData": "",
-                                    "form.prodData": "",
-                                    "form.moneyData": "",
-                                    "form.notesData": "",
-                                    "form.fundRateData": "",
-                                    "form.insuranceRateData": "",
-                                    "form.unit": "万"
-                                })
-                                console.log("complete");
-                            }
-                        }, this);
-                    })
+                    }, this);
                 })
-        })
+            })
+        )
+    },
+    save(){
+        const that = this;
+        wx.saveImageToPhotosAlbum({
+            filePath: that.data.resultImage,
+            success(res) {wx.showToast({
+                title: "保存成功！",
+                icon: 'none',
+                image: '',
+                duration: 1000,
+                mask: false,
+                success: (result) => {
 
-        // const data = this.data.form
-        // const width = 300,
-        //     height = 240
-        // const xPosition = (width / 2 - 15)
-        // const fontSize = "20px"
-        // const space = 25
-        // const obj = [{
-        //         type: "image",
-        //         x: xPosition - ((data.sortData.length + 2) / 2) * space,
-        //         y: 20,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/prize.png"
-        //     }, {
-        //         type: "text",
-        //         x: width / 2,
-        //         y: 30,
-        //         fontSize: fontSize,
-        //         fontColor: "#000000",
-        //         text: `${data.sortData}喜报`
-        //     }, {
-        //         type: "image",
-        //         x: xPosition + ((data.sortData.length + 2) / 2) * space,
-        //         y: 20,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/prize.png"
-        //     }, {
-        //         type: "image",
-        //         x: xPosition - ((data.bankData.length + data.username.length) / 2) * space,
-        //         y: 60,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/salute.png"
-        //     }, {
-        //         type: "text",
-        //         x: width / 2,
-        //         y: 70,
-        //         fontSize: fontSize,
-        //         fontColor: "#000000",
-        //         text: `${data.bankData} ${data.username}`
-        //     }, {
-        //         type: "image",
-        //         x: xPosition + ((data.bankData.length + data.username.length) / 2) * space,
-        //         y: 60,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/salute.png"
-        //     }, {
-        //         type: "image",
-        //         x: xPosition - ((data.sortData !== "一体化联动" ? (data.prodData.length + data.moneyData.length + data.unit.length + data.insuranceRateData.length + data.fundRateData.length) : data.prodData.length + 1) / 2) * space,
-        //         y: 100,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/medal.png"
-        //     }, {
-        //         type: "text",
-        //         x: width / 2,
-        //         y: 110,
-        //         fontSize: fontSize,
-        //         fontColor: "#000000",
-        //         text: `${data.sortData !== "一体化联动" ? data.prodData + data.moneyData + data.unit + data.insuranceRateData + data.fundRateData : data.prodData}`
-        //     }, {
-        //         type: "image",
-        //         x: xPosition + ((data.sortData !== "一体化联动" ? (data.prodData.length + data.moneyData.length + data.unit.length + data.insuranceRateData.length + data.fundRateData.length) : data.prodData.length + 1) / 2) * space,
-        //         y: 100,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/medal.png"
-        //     }, {
-        //         type: "image",
-        //         x: xPosition + 50,
-        //         y: 150,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/fire.png"
-        //     }, {
-        //         type: "image",
-        //         x: xPosition - 50,
-        //         y: 150,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/fire.png"
-        //     },
-        //     {
-        //         type: "text",
-        //         x: width / 2,
-        //         y: 160,
-        //         width: 100,
-        //         fontSize: fontSize,
-        //         fontColor: "#000000",
-        //         text: "冲刺全年"
-        //     }, {
-        //         type: "text",
-        //         x: width / 2,
-        //         y: 190,
-        //         width: 100,
-        //         fontSize: fontSize,
-        //         fontColor: "#000000",
-        //         text: "冲刺全年"
-        //     }, {
-        //         type: "image",
-        //         x: xPosition + 50,
-        //         y: 180,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/fire.png"
-        //     }, {
-        //         type: "image",
-        //         x: xPosition - 50,
-        //         y: 180,
-        //         width: 30,
-        //         height: 30,
-        //         img: "/images/fire.png"
-        //     },
-        // ]
-        // data.sortData !== "一体化联动" ? obj.concat({}) : ""
-        // const promise = createCanvasInit({ id: "#myCanvas", width: width, height: height, array: obj }, this).then((url) => {
-        //     this.setData({
-        //         "form.sortData": "",
-        //         "form.sortData": "",
-        //         "form.prodData": "",
-        //         "form.moneyData": "",
-        //         "form.notesData": "",
-        //         "form.fundRateData": "",
-        //         "form.insuranceRateData": "",
-        //         "form.unit": "万"
-        //     })
-        //     return ({
-        //         title: `业绩分享`,
-        //         imageUrl: url
-        //     })
-        // });
+                },
+                fail: () => { },
+                complete: () => { }
+            });
+            that.setData({showShareModal: false});
+        }
+        })
+    },
+    /**
+     * 用户点击分享
+     */
+    onShareAppMessage: function (e) {
+        const that = this;
+        let completeDate = that.data.form.date.replace(/(\d{4})\-(\d{2})\-(\d{2})/, "$1年$2月$3日")
+        let finallData = completeDate.substring(completeDate.indexOf('年') + 1, completeDate.length)
+        let promise = new Promise(resolve => 
+            resolve({
+                title: `${that.data.form.username}${finallData}业绩分享`,
+                path: "/pages/index/index",
+                imageUrl: that.data.resultImage
+            }))
         return ({
             title: '自定义转发标题',
             promise
